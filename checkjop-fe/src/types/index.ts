@@ -49,6 +49,7 @@ type CategoryResult = {
   earned_credits: number;
   required_credits: number;
   is_satisfied: boolean;
+  missing_courses: string[];
 };
 
 type PrerequisiteViolation = {

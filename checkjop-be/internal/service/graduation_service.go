@@ -115,6 +115,7 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 		}
 
 		// If no credits from category-specified courses, check database courses
+		missingCourses := []string{}
 		if earnedCredits == 0 {
 			countedCourses := make(map[string]bool)
 			for _, course := range category.Courses {
@@ -127,6 +128,8 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 						earnedCredits += completedCourse.Credits
 						countedCourses[course.Code] = true
 					}
+				} else {
+					missingCourses = append(missingCourses, course.Code)
 				}
 			}
 		}
@@ -145,6 +148,7 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 			EarnedCredits:   earnedCredits,
 			RequiredCredits: category.MinCredits,
 			IsSatisfied:     earnedCredits >= category.MinCredits,
+			MissingCourses:  missingCourses,
 		})
 	}
 

@@ -46,10 +46,11 @@ type GraduationCheckResult struct {
 }
 
 type CategoryCheckResult struct {
-	CategoryName    string `json:"category_name"`
-	EarnedCredits   int    `json:"earned_credits"`
-	RequiredCredits int    `json:"required_credits"`
-	IsSatisfied     bool   `json:"is_satisfied"`
+	CategoryName    string   `json:"category_name"`
+	EarnedCredits   int      `json:"earned_credits"`
+	RequiredCredits int      `json:"required_credits"`
+	IsSatisfied     bool     `json:"is_satisfied"`
+	MissingCourses  []string `json:"missing_courses"`
 }
 
 type PrerequisiteViolation struct {
