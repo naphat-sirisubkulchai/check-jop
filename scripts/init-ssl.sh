@@ -17,11 +17,11 @@ cd ../..
 
 # Step 2: Start nginx ด้วย config ชั่วคราว
 echo "==> Starting nginx..."
-docker compose -f docker-compose.prod.yml up -d nginx frontend backend postgres
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d nginx frontend backend postgres
 
 # Step 3: ขอ certificate
 echo "==> Requesting SSL certificate..."
-docker compose -f docker-compose.prod.yml run --rm certbot certonly \
+docker compose -f docker-compose.prod.yml --env-file .env.prod run --rm certbot certonly \
   --webroot \
   --webroot-path=/var/www/certbot \
   --email "$EMAIL" \
@@ -38,7 +38,7 @@ cd ../..
 
 # Step 5: Reload nginx
 echo "==> Reloading nginx..."
-docker compose -f docker-compose.prod.yml exec nginx nginx -s reload
+docker compose -f docker-compose.prod.yml --env-file .env.prod exec nginx nginx -s reload
 
 echo ""
 echo "==> SSL setup complete! Site is live at https://$DOMAIN"
