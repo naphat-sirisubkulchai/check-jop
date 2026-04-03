@@ -5,7 +5,7 @@
 # =============================================================
 set -e
 
-DOMAIN="checkjop-mathcom-cu.com"
+DOMAIN="checkjop-cscu.duckdns.org"
 EMAIL="your-email@example.com"   # <-- เปลี่ยนเป็น email จริง
 
 # Step 1: ใช้ config แบบ HTTP-only ก่อน (ยังไม่มี cert)
@@ -28,7 +28,6 @@ docker compose -f docker-compose.prod.yml run --rm certbot certonly \
   --agree-tos \
   --no-eff-email \
   -d "$DOMAIN" \
-  -d "www.$DOMAIN"
 
 # Step 4: สลับกลับเป็น HTTPS config
 echo "==> Switching back to HTTPS nginx config..."
