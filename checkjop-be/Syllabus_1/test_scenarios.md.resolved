@@ -1,0 +1,275 @@
+# Test Scenarios for Graduation Check API
+
+This document provides JSON payloads to test various course conditions (prerequisites, corequisites, etc.) using the API endpoint:
+
+**Endpoint:** `POST http://localhost:8080/api/v1/graduation/check/name`
+
+**Curriculum Used:** `เอกเดี่ยว-ฝึกงาน-2566` (from CSV)
+**Admission Year:** `2566`
+
+## 1. Simple Prerequisite Check
+**Course:** [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362) (Computer and Programming Laboratory)
+**Prerequisite:** `2301170` (Computer and Programming)
+
+### Scenario: Missing Prerequisite (Fail)
+Trying to take [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362) without `2301170`.
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301172",
+      "year": 2566,
+      "semester": 1,
+      "credits": 1
+    }
+  ]
+}
+```
+**Expected Result:** `prerequisite_violations` should contain [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362) missing `2301170`.
+
+### Scenario: Prerequisite Met (Pass)
+Taking `2301170` before [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362).
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301170",
+      "year": 2566,
+      "semester": 1,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301172",
+      "year": 2566,
+      "semester": 2,
+      "credits": 1
+    }
+  ]
+}
+```
+
+## 2. OR Logic Prerequisite
+**Course:** [2301180](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#49-99) (Exploring Computer Science)
+**Prerequisite:** `2301170` OR `2301173`
+
+### Scenario: Missing Both Options (Fail)
+Taking [2301180](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#49-99) without `2301170` or `2301173`.
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301180",
+      "year": 2566,
+      "semester": 2,
+      "credits": 2
+    }
+  ]
+}
+```
+
+### Scenario: One Option Met (Pass)
+Taking `2301173` before [2301180](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#49-99).
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301173",
+      "year": 2566,
+      "semester": 1,
+      "credits": 4,
+      "grade": "B"
+    },
+    {
+      "course_code": "2301180",
+      "year": 2566,
+      "semester": 2,
+      "credits": 2
+    }
+  ]
+}
+```
+
+## 3. AND Logic Prerequisite
+**Course:** `2301261` (Introduction to Information Systems)
+**Prerequisite:** `2301170` AND [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362)
+
+### Scenario: Missing One Prerequisite (Fail)
+Taking `2301261` with only `2301170`.
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301170",
+      "year": 2566,
+      "semester": 1,
+      "credits": 3,
+      "grade": "C"
+    },
+    {
+      "course_code": "2301261",
+      "year": 2566,
+      "semester": 2,
+      "credits": 3
+    }
+  ]
+}
+```
+
+## 4. Complex Logic (AND + OR)
+**Course:** `2301260` (Programming Techniques)
+**Prerequisite:** [(2301170 AND 2301172) OR 2301173](file:///Users/get/Documents/coding/checkjop-be/internal/model/graduation.go#63-64)
+
+### Scenario: Satisfying the AND Group (Pass)
+Taking `2301170` and [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362).
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301170",
+      "year": 2566,
+      "semester": 1,
+      "credits": 3,
+      "grade": "C"
+    },
+    {
+      "course_code": "2301172",
+      "year": 2566,
+      "semester": 1,
+      "credits": 1,
+      "grade": "B"
+    },
+    {
+      "course_code": "2301260",
+      "year": 2566,
+      "semester": 2,
+      "credits": 4
+    }
+  ]
+}
+```
+
+### Scenario: Satisfying the OR Option (Pass)
+Taking `2301173` only.
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301173",
+      "year": 2566,
+      "semester": 1,
+      "credits": 4,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301260",
+      "year": 2566,
+      "semester": 2,
+      "credits": 4
+    }
+  ]
+}
+```
+
+## 5. Corequisite Check
+**Course:** [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362) (Lab)
+**Corequisite:** `2301170` (Lecture) - *Note: CSV says coreq is 2301170*
+
+### Scenario: Taking Corequisite in Same Term (Pass)
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301170",
+      "year": 2566,
+      "semester": 1,
+      "credits": 3,
+      "grade": "C"
+    },
+    {
+      "course_code": "2301172",
+      "year": 2566,
+      "semester": 1,
+      "credits": 1,
+      "grade": "B"
+    }
+  ]
+}
+```
+
+### Scenario: Taking Corequisite in Different Term (Fail)
+*Note: Corequisites usually imply "must take together OR have passed previously". If passed previously, it's fine. If taking now, must be same term.*
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301170",
+      "year": 2566,
+      "semester": 1,
+      "credits": 3,
+      "grade": "F" 
+    },
+    {
+      "course_code": "2301172",
+      "year": 2566,
+      "semester": 2,
+      "credits": 1
+    }
+  ]
+}
+```
+*If 2301170 was F, it's not passed. If taking 2301172 in Sem 2, must take 2301170 in Sem 2 as well.*
+
+## 6. Cross-Curriculum Check
+The system automatically handles cross-curriculum checks by matching [Code](file:///Users/get/Documents/coding/checkjop-be/internal/handler/course_handler.go#54-76) and [Year](file:///Users/get/Documents/coding/checkjop-be/tests/mocks.go#41-45).
+If you take a course that is defined in another curriculum but shares the same Code and Year, it will be validated correctly.
+
+## 7. C.F. Exemption
+**Course:** [2301172](file:///Users/get/Documents/coding/checkjop-be/tests/graduation_service_test.go#325-362)
+**Prerequisite:** `2301170`
+
+### Scenario: Missing Prereq but Exempted (Pass)
+
+```json
+{
+  "name_th": "เอกเดี่ยว-ฝึกงาน-2566",
+  "admission_year": 2566,
+  "courses": [
+    {
+      "course_code": "2301172",
+      "year": 2566,
+      "semester": 1,
+      "credits": 1
+    }
+  ],
+  "exemptions": ["2301172"]
+}
+```
+*Note: Exemption usually applies to the course being taken (allowing it despite missing prereqs).*

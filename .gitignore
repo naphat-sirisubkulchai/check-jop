@@ -1,0 +1,19 @@
+# Secrets
+.env.prod
+.env
+*.pem
+*.key
+
+# Frontend
+checkjop-fe/node_modules
+checkjop-fe/.next
+checkjop-fe/out
+
+# Backend
+checkjop-be/bin
+
+# Git subfolders (ไม่เอา .git ของ fe/be เข้า monorepo)
+checkjop-fe/.git
+checkjop-be/.git
+
+.claude

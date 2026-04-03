@@ -1,0 +1,258 @@
+{
+  "version": "1.0.0",
+  "exportDate": "2026-03-18T10:58:32.421Z",
+  "studyPlan": [
+    {
+      "course_code": "2301107",
+      "yearOfStudy": 1,
+      "semester": 1,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "2301173",
+      "yearOfStudy": 1,
+      "semester": 1,
+      "academicYear": 2566,
+      "credits": 4
+    },
+    {
+      "course_code": "2303107",
+      "yearOfStudy": 1,
+      "semester": 1,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "2303108",
+      "yearOfStudy": 1,
+      "semester": 1,
+      "academicYear": 2566,
+      "credits": 1
+    },
+    {
+      "course_code": "2304121",
+      "yearOfStudy": 1,
+      "semester": 1,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "2304181",
+      "yearOfStudy": 1,
+      "semester": 1,
+      "academicYear": 2566,
+      "credits": 1
+    },
+    {
+      "course_code": "5500111",
+      "yearOfStudy": 1,
+      "semester": 1,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "2301108",
+      "yearOfStudy": 1,
+      "semester": 2,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "2301180",
+      "yearOfStudy": 1,
+      "semester": 2,
+      "academicYear": 2566,
+      "credits": 2
+    },
+    {
+      "course_code": "2301220",
+      "yearOfStudy": 1,
+      "semester": 2,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "2301260",
+      "yearOfStudy": 1,
+      "semester": 2,
+      "academicYear": 2566,
+      "credits": 4
+    },
+    {
+      "course_code": "2302113",
+      "yearOfStudy": 1,
+      "semester": 2,
+      "academicYear": 2566,
+      "credits": 1
+    },
+    {
+      "course_code": "2302161",
+      "yearOfStudy": 1,
+      "semester": 2,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "5500112",
+      "yearOfStudy": 1,
+      "semester": 2,
+      "academicYear": 2566,
+      "credits": 3
+    },
+    {
+      "course_code": "2301230",
+      "yearOfStudy": 2,
+      "semester": 1,
+      "academicYear": 2567,
+      "credits": 2
+    },
+    {
+      "course_code": "2301265",
+      "yearOfStudy": 2,
+      "semester": 1,
+      "academicYear": 2567,
+      "credits": 4
+    },
+    {
+      "course_code": "2301274",
+      "yearOfStudy": 2,
+      "semester": 1,
+      "academicYear": 2567,
+      "credits": 3
+    },
+    {
+      "course_code": "2301286",
+      "yearOfStudy": 2,
+      "semester": 1,
+      "academicYear": 2567,
+      "credits": 3
+    },
+    {
+      "course_code": "2301234",
+      "yearOfStudy": 2,
+      "semester": 2,
+      "academicYear": 2567,
+      "credits": 3
+    },
+    {
+      "course_code": "2301266",
+      "yearOfStudy": 2,
+      "semester": 2,
+      "academicYear": 2567,
+      "credits": 3
+    },
+    {
+      "course_code": "2301275",
+      "yearOfStudy": 2,
+      "semester": 2,
+      "academicYear": 2567,
+      "credits": 3
+    },
+    {
+      "course_code": "2301375",
+      "yearOfStudy": 2,
+      "semester": 2,
+      "academicYear": 2567,
+      "credits": 3
+    },
+    {
+      "course_code": "5500204",
+      "yearOfStudy": 2,
+      "semester": 2,
+      "academicYear": 2567,
+      "credits": 3
+    },
+    {
+      "course_code": "2301367",
+      "yearOfStudy": 3,
+      "semester": 1,
+      "academicYear": 2568,
+      "credits": 3
+    },
+    {
+      "course_code": "2301371",
+      "yearOfStudy": 3,
+      "semester": 1,
+      "academicYear": 2568,
+      "credits": 3
+    },
+    {
+      "course_code": "2301379",
+      "yearOfStudy": 3,
+      "semester": 1,
+      "academicYear": 2568,
+      "credits": 3
+    },
+    {
+      "course_code": "2301397",
+      "yearOfStudy": 3,
+      "semester": 2,
+      "academicYear": 2568,
+      "credits": 1
+    },
+    {
+      "course_code": "2301360",
+      "yearOfStudy": 3,
+      "semester": 2,
+      "academicYear": 2568,
+      "credits": 3
+    },
+    {
+      "course_code": "2301399",
+      "yearOfStudy": 3,
+      "semester": 2,
+      "academicYear": 2568,
+      "credits": 1
+    },
+    {
+      "course_code": "5500496",
+      "yearOfStudy": 3,
+      "semester": 2,
+      "academicYear": 2568,
+      "credits": 3
+    },
+    {
+      "course_code": "2301398",
+      "yearOfStudy": 4,
+      "semester": 1,
+      "academicYear": 2569,
+      "credits": 3
+    },
+    {
+      "course_code": "2301487",
+      "yearOfStudy": 4,
+      "semester": 1,
+      "academicYear": 2569,
+      "credits": 3
+    },
+    {
+      "course_code": "2301480",
+      "yearOfStudy": 4,
+      "semester": 2,
+      "academicYear": 2569,
+      "credits": 1
+    }
+  ],
+  "exemptions": [],
+  "selectedCurriculum": {
+    "id": "206530c6-1a43-43fb-95ae-4314477971c6",
+    "nameTH": "เอกเดี่ยว-สหกิจ-2566",
+    "nameEN": "Course Dependency-Single major/Cooped",
+    "year": 66,
+    "minTotalCredits": 136,
+    "isActive": true,
+    "categories": [],
+    "courses": []
+  },
+  "yearMapping": {
+    "1": 2566,
+    "2": 2567,
+    "3": 2568,
+    "4": 2569
+  },
+  "metadata": {
+    "totalCredits": 88,
+    "coursesCount": 33
+  }
+}

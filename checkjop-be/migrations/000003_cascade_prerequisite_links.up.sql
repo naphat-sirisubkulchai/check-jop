@@ -1,0 +1,9 @@
+-- prerequisite_course_links.group_id -> prerequisite_groups.id ON DELETE CASCADE
+ALTER TABLE prerequisite_course_links DROP CONSTRAINT IF EXISTS fk_prerequisite_groups_prerequisite_courses;
+ALTER TABLE prerequisite_course_links ADD CONSTRAINT fk_prerequisite_groups_prerequisite_courses
+    FOREIGN KEY (group_id) REFERENCES prerequisite_groups(id) ON DELETE CASCADE;
+
+-- prerequisite_course_links.prerequisite_course_id -> courses.id ON DELETE CASCADE
+ALTER TABLE prerequisite_course_links DROP CONSTRAINT IF EXISTS fk_prerequisite_course_links_prerequisite_course;
+ALTER TABLE prerequisite_course_links ADD CONSTRAINT fk_prerequisite_course_links_prerequisite_course
+    FOREIGN KEY (prerequisite_course_id) REFERENCES courses(id) ON DELETE CASCADE;

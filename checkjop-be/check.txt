@@ -1,0 +1,124 @@
+3. validateTransitivePrerequisites() - ฟังก์ชันสำคัญที่สุด!
+
+เป้าหมาย
+ตรวจสอบ prerequisite แบบ transitive (ข้ามชั้น) พร้อม support OR/AND logic
+
+Algorithm
+**Recursive Depth-First Search (DFS) with Memoization**
+
+Data Structures
+- **Graph (Directed Acyclic Graph - DAG)** - prerequisite relationships
+- **HashMap** - visited set (memoization)
+- **Array/Slice** - เก็บ missing และ wrong term courses
+
+Graph Structure
+```
+Course A
+  └─ PrerequisiteGroup 1 (OR Group)
+      ├─ Course B
+      │   └─ PrerequisiteGroup 1 (AND Group)
+      │       ├─ Course D
+      │       └─ Course E
+      └─ Course C
+```
+
+ขั้นตอนการทำงาน (Recursive DFS)
+```
+FUNCTION validateTransitivePrerequisites(courseCode, completedMap, currentCourse, visited):
+    // Base case: หยุดถ้าเคยเยี่ยมแล้ว (ป้องกัน infinite loop)
+    IF courseCode in visited:
+        RETURN [], []
+    
+    visited[courseCode] = true
+    
+    // ดึงข้อมูลวิชาจาก database
+    course = getCourseByCode(courseCode)
+    IF course not found:
+        RETURN [], []
+    
+    allMissing = []
+    allWrongTerm = []
+    
+    // วนลูปตรวจแต่ละ PrerequisiteGroup
+    FOR each group in course.PrerequisiteGroups:
+        
+        IF group.IsOrGroup:  // OR Logic
+            groupSatisfied = false
+            groupMissing = []
+            groupWrongTerm = []
+            
+            FOR each prereqCourse in group.PrerequisiteCourses:
+                prereqCode = prereqCourse.Code
+                
+                IF prereqCode exists in completedMap:
+                    completed = completedMap[prereqCode]
+                    
+                    IF isCourseTakenBefore(completed, currentCourse):
+                        groupSatisfied = true
+                        
+                        // Recursive call: ตรวจ prerequisite ของ prereq นี้ต่อ
+                        transitMissing, transitWrongTerm = 
+                            validateTransitivePrerequisites(
+                                prereqCode, 
+                                completedMap, 
+                                currentCourse, 
+                                visited
+                            )
+                        
+                        allMissing += transitMissing
+                        allWrongTerm += transitWrongTerm
+                        BREAK  // OR satisfied, stop checking
+                    ELSE:
+                        groupWrongTerm.append(prereqCode)
+                ELSE:
+                    groupMissing.append(prereqCode)
+            
+            IF NOT groupSatisfied:
+                // OR group ไม่ผ่าน: รวมทุก option ที่ขาด
+                allMissing += groupMissing
+                allWrongTerm += groupWrongTerm
+                
+                // ตรวจ transitive prerequisites ของทุก option
+                FOR each prereqCourse in group.PrerequisiteCourses:
+                    transitMissing, transitWrongTerm = 
+                        validateTransitivePrerequisites(...)
+                    allMissing += transitMissing
+                    allWrongTerm += transitWrongTerm
+        
+        ELSE:  // AND Logic
+            FOR each prereqCourse in group.PrerequisiteCourses:
+                prereqCode = prereqCourse.Code
+                
+                IF prereqCode NOT in completedMap:
+                    allMissing.append(prereqCode)
+                    
+                    // Recursive: ตรวจ prerequisite ของตัวที่ขาดด้วย
+                    transitMissing, transitWrongTerm = 
+                        validateTransitivePrerequisites(...)
+                    allMissing += transitMissing
+                    allWrongTerm += transitWrongTerm
+                
+                ELSE IF NOT isCourseTakenBefore(completed, currentCourse):
+                    allWrongTerm.append(prereqCode)
+                
+                ELSE:
+                    // Satisfied: ตรวจ transitive prerequisites ต่อ
+                    transitMissing, transitWrongTerm = 
+                        validateTransitivePrerequisites(...)
+                    allMissing += transitMissing
+                    allWrongTerm += transitWrongTerm
+    
+    RETURN allMissing, allWrongTerm
+```
+
+Key Features
+1. **Transitive (ข้ามชั้น)**: ตรวจสอบ prerequisite ของ prerequisite ต่อไปเรื่อย ๆ
+2. **OR Logic**: ลงวิชาใดวิชาหนึ่งใน group ก็ผ่าน
+3. **AND Logic**: ต้องลงทุกวิชาใน group
+4. **Cycle Detection**: ใช้ visited set ป้องกัน infinite loop
+5. **Strict Term Requirement**: ตรวจว่าลง prerequisite ก่อนหรือไม่
+
+Time Complexity
+- **O(V + E)** - V = nodes, E = edges
+- เป็น DFS traversal แบบมี memoization (visited set)
+- Worst case คือ traverse ทุก node และ edge หนึ่งครั้ง

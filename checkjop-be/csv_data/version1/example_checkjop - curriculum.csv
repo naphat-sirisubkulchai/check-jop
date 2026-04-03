@@ -1,0 +1,7 @@
+curriculumNameEN,curriculumNameTH,Year,minTotalCredit,isActive
+Course Dependency-Single major/Intern,เอกเดี่ยว-ฝึกงาน-2566,66,136,TRUE
+Course Dependency-Single major/Cooped,เอกเดี่ยว-สหกิจ-2566,66,136,TRUE
+Course Dependency-Single major/minor-Intern,เอกโท-ฝึกงาน-2566,66,136,TRUE
+Course Dependency-Single major/minor/Cooped,เอกโท-สหกิจ-2566,66,136,TRUE
+Course Dependency-Honor program,เกียรตินิยม-ฝึกงาน-2566,66,137,TRUE
+Course Dependency-B.Sc/Master 4+1,ควบข้ามระดับปริญญาโท-2566,66,136,TRUE
