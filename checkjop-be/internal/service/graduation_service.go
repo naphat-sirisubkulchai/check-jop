@@ -4,6 +4,7 @@ import (
 	"checkjop-be/internal/model"
 	"checkjop-be/internal/repository"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -116,7 +117,8 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 
 		// If no credits from category-specified courses, check database courses
 		missingCourses := []string{}
-		if earnedCredits == 0 {
+		isElective := strings.Contains(category.NameTH, "วิชาเลือก") || strings.Contains(category.NameEN, "Elective")
+		if earnedCredits == 0 && !isElective {
 			countedCourses := make(map[string]bool)
 			for _, course := range category.Courses {
 				// Only count courses matching the student's admission year
