@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "exportDate": "2026-04-02T17:20:38.218Z",
+  "studyPlan": [
+    {
+      "course_code": "GEN ED I (3)",
+      "course_name": "Gen Ed I (3)",
+      "academicYear": 2566,
+      "yearOfStudy": 1,
+      "semester": 1,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไป-วิทย์",
+      "grade": "A"
+    },
+    {
+      "course_code": "GEN ED II (3)",
+      "course_name": "Gen Ed II (3)",
+      "academicYear": 2566,
+      "yearOfStudy": 1,
+      "semester": 1,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไป-มนุษย์",
+      "grade": "A"
+    }
+  ],
+  "exemptions": [],
+  "selectedCurriculum": {
+    "id": "9e171fb5-71d0-48c4-b1d6-564b12a25aaf",
+    "nameTH": "เอกเดี่ยว-ฝึกงาน-2566",
+    "nameEN": "Course Dependency-Single major/Intern",
+    "year": 66,
+    "minTotalCredits": 136,
+    "isActive": true,
+    "categories": [],
+    "courses": []
+  },
+  "yearMapping": {
+    "1": 2566,
+    "2": 2567,
+    "3": 2568,
+    "4": 2569
+  },
+  "metadata": {
+    "totalCredits": 6,
+    "coursesCount": 2
+  }
+}

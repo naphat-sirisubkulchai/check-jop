@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "exportDate": "2026-04-02T17:05:56.594Z",
+  "studyPlan": [
+    {
+      "course_code": "2303107",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 3
+    },
+    {
+      "course_code": "2303108",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 1
+    }
+  ],
+  "exemptions": [],
+  "selectedCurriculum": {
+    "id": "024cd988-a1de-4802-8658-7ecace0696fc",
+    "nameTH": "เอกโท-สหกิจ-2566",
+    "nameEN": "Course Dependency-Single major/minor/Cooped",
+    "year": 66,
+    "minTotalCredits": 136,
+    "isActive": true,
+    "categories": [],
+    "courses": []
+  },
+  "yearMapping": {
+    "1": 2566,
+    "2": 2567,
+    "3": 2568,
+    "4": 2569
+  },
+  "metadata": {
+    "totalCredits": 4,
+    "coursesCount": 2
+  }
+}

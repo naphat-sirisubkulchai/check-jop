@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "exportDate": "2026-04-02T17:35:39.778Z",
+  "studyPlan": [
+    {
+      "course_code": "2301234",
+      "yearOfStudy": 2,
+      "semester": 1,
+      "academicYear": 2567,
+      "credits": 3
+    }
+  ],
+  "exemptions": [],
+  "selectedCurriculum": {
+    "id": "9776bb77-ebf3-42f8-9702-2910af76871f",
+    "nameTH": "เอกเดี่ยว-ฝึกงาน-2566",
+    "nameEN": "Course Dependency-Single major/Intern",
+    "year": 66,
+    "minTotalCredits": 136,
+    "isActive": true,
+    "categories": [],
+    "courses": []
+  },
+  "yearMapping": {
+    "1": 2566,
+    "2": 2567,
+    "3": 2568,
+    "4": 2569
+  },
+  "metadata": {
+    "totalCredits": 3,
+    "coursesCount": 1
+  }
+}
