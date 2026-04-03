@@ -68,7 +68,7 @@ export function MissingCatalogYearsCard({
 
       {/* Modal overlay */}
       {!dismissed && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 print:hidden">
           <div className="relative w-full max-w-lg mx-4 bg-white rounded-2xl shadow-2xl border-2 border-red-300 p-6">
             <button
               onClick={() => setDismissed(true)}

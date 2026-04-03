@@ -18,7 +18,7 @@ export function OverviewCards({
     (result.credit_limit_violations?.length || 0);
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="overview-cards-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {/* Total Credits */}
       <Card
         className="h-min gap-4 border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow"

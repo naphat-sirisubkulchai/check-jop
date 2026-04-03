@@ -216,3 +216,59 @@
   }
 }
 
+@media print {
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  /* Hide UI chrome */
+  header,
+  [data-sonner-toaster],
+  [data-radix-popper-content-wrapper] {
+    display: none !important;
+  }
+
+  /* Unblock scrollable containers */
+  .overflow-hidden { overflow: visible !important; }
+  .overflow-y-auto { overflow: visible !important; }
+  .h-full { height: auto !important; }
+  .flex-1 { flex: none !important; }
+
+  /* Remove sticky */
+  .lg\:sticky { position: static !important; }
+
+  /* Remove margins on main content */
+  .mx-8 { margin-left: 8px !important; margin-right: 8px !important; }
+
+  /* Overview: 4 columns */
+  .overview-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* Result: 2 columns */
+  .result-two-col {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* No shadows */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* No page breaks inside cards */
+  .rounded-xl, .rounded-2xl {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Hide modal overlay */
+  .fixed { display: none !important; }
+}
+

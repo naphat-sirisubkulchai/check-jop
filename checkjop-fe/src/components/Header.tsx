@@ -9,7 +9,7 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="bg-chula-active px-6 py-2.5 flex justify-between items-center flex-shrink-0 shadow-md z-20">
+    <header className="bg-chula-active px-6 py-2.5 flex justify-between items-center flex-shrink-0 shadow-md z-20 print:hidden">
       {/* Logo & Title */}
       <div className="flex items-center gap-1 flex-shrink-0 px-2">
         <Link href="/" className="flex-shrink-0">

@@ -72,9 +72,9 @@ export function ResultSection({
         />
 
         {/* Two Column Layout: Study Plan Record & Analysis Results */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="result-two-col grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Study Plan Record */}
-          <div className="lg:sticky lg:top-6 lg:self-start">
+          <div className="lg:sticky lg:top-6 lg:self-start print:static">
             <StudyPlanRecordCard studyPlan={studyPlan} />
           </div>
 
