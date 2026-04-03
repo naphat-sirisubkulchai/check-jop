@@ -13,9 +13,8 @@ interface CategoryResultsCardProps {
 export function CategoryResultsCard({
   categoryResults,
 }: CategoryResultsCardProps) {
-  const missingCategories = categoryResults.filter(
-    (category) => !category.is_satisfied
-  );
+  const sorted = [...categoryResults].sort((a, b) => b.required_credits - a.required_credits);
+  const missingCategories = sorted.filter((category) => !category.is_satisfied);
 
   return (
     <Card className="p-6 shadow-md border-gray-200">
@@ -34,7 +33,7 @@ export function CategoryResultsCard({
 
         <TabsContent value="allReq" role="tabpanel" className="mt-4">
           <div className="divide-y divide-gray-200" role="list" aria-label="All category requirements">
-            {categoryResults.map((category, index) => (
+            {sorted.map((category, index) => (
               <CategoryProgress key={index} category={category} />
             ))}
           </div>
