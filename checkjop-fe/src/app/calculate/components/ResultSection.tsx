@@ -54,7 +54,7 @@ export function ResultSection({
   return (
     <div className="space-y-6">
       <div aria-label="Graduation analysis results" className="space-y-6">
-        {/* Graduation Eligibility Banner */}
+          {/* Graduation Eligibility Banner */}
         <GraduationBanner result={result} />
 
         {/* Missing Catalog Years Warning */}
@@ -71,6 +71,11 @@ export function ResultSection({
           totalCategories={totalCategories}
         />
 
+        {/* Print-only: Category Requirements below overview cards */}
+        <div className="hidden print:block">
+          <CategoryResultsCard categoryResults={result.category_results} />
+        </div>
+
         {/* Two Column Layout: Study Plan Record & Analysis Results */}
         <div className="result-two-col grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Study Plan Record */}
@@ -80,8 +85,10 @@ export function ResultSection({
 
           {/* Right Column - Analysis Results */}
           <div className="space-y-6">
-            {/* Category Details */}
-            <CategoryResultsCard categoryResults={result.category_results} />
+            {/* Category Details - hidden on print (shown at top instead) */}
+            <div className="print:hidden">
+              <CategoryResultsCard categoryResults={result.category_results} />
+            </div>
 
             {/* Pre and Co requisite Violations */}
             <PrerequisiteViolationsCard
