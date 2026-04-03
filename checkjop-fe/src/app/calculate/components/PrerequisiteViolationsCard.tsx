@@ -7,7 +7,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { PrerequisiteViolation } from "@/types";
-import { ViolationCard, SuccessMessage } from "@/components/ViolationCard";
+import { ViolationCard } from "@/components/ViolationCard";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAnalytics } from "@/hooks/useAnalytics";

@@ -16,7 +16,6 @@ import { Plan } from "@/types";
 import { useAppStore } from "@/store/appStore";
 import { toast } from "sonner";
 import { GRADE_OPTIONS } from "@/lib/constants";
-import { Switch } from "./ui/switch";
 interface ManualCourseFormProps {
   onClose?: () => void;
   semester: number;

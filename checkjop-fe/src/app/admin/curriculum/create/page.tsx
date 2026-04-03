@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, Upload, Download, FileText, Plus, X } from "lucide-react";
+import { ArrowLeft, Upload, Download, FileText, X } from "lucide-react";
 import Papa from "papaparse";
 import { PreviewCard } from "./components/previewCard";
 import { courseApi } from "@/api/courseApi";
