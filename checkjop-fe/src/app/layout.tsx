@@ -15,6 +15,9 @@ const baiJamjuree = Bai_Jamjuree({
 export const metadata: Metadata = {
   title: "CheckJop",
   description: "ระบบตรวจสอบการสำเร็จการศึกษา",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({

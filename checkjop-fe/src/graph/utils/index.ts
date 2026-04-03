@@ -55,29 +55,17 @@ function generateGraphLayout(
 function parseRelations(rel: string): string[] {
   if (!rel) return [];
 
-  // Convert to string if it's a number
   const relString = rel.toString().trim();
   if (!relString) return [];
 
-  // Remove outer parentheses if they wrap the entire string
-  const cleaned = relString.replace(/^\(|\)$/g, "");
+  // Strip all parentheses, then split by OR and AND and comma
+  const cleaned = relString.replace(/[()]/g, "");
+  const codes = cleaned
+    .split(/\s+(?:OR|AND)\s+|,/i)
+    .map((s) => s.trim())
+    .filter(Boolean);
 
-  // Split by OR first, then by comma within each OR group
-  const orGroups = cleaned.split(/\s+OR\s+/i);
-  const result: string[] = [];
-
-  orGroups.forEach((group) => {
-    // Remove any remaining parentheses and split by comma
-    const courses = group
-      .replace(/[()]/g, "")
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    result.push(...courses);
-  });
-
-  return [...new Set(result)]; // Remove duplicates
+  return [...new Set(codes)];
 }
 
 export { generateGraphLayout, parseRelations };

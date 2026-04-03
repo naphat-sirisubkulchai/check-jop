@@ -1,35 +1,29 @@
 "use client";
+import { useState } from "react";
 import CourseListContainer from "./components/CourseListContainer";
 import StudyPlanContainer from "./components/StudyPlanContainer";
 import { useAppStore } from "@/store/appStore";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import SettingsDialog from "@/components/SettingsDialog";
 
 export default function Page() {
-  const router = useRouter();
   const { selectedCurriculum } = useAppStore();
-
-  // Redirect to setup page if no curriculum is selected
-  useEffect(() => {
-    if (!selectedCurriculum) {
-      router.push("/setup");
-    }
-  }, [selectedCurriculum, router]);
-
-  // Show nothing while redirecting
-  if (!selectedCurriculum) {
-    return null;
-  }
+  const [settingsOpen, setSettingsOpen] = useState(!selectedCurriculum);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Main Content */}
       <main className="flex flex-1 overflow-hidden">
-        {/* Left Panel - Course List */}
         <CourseListContainer />
-        {/* Right Panel - Semester Grid */}
         <StudyPlanContainer />
       </main>
+
+      <SettingsDialog
+        open={settingsOpen}
+        onOpenChange={(open) => {
+          // ถ้ายังไม่มี curriculum ห้ามปิด dialog
+          if (!open && !selectedCurriculum) return;
+          setSettingsOpen(open);
+        }}
+      />
     </div>
   );
 }

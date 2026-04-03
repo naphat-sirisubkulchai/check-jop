@@ -21,6 +21,13 @@ interface ManualCourseFormProps {
   semester: number;
   yearOfStudy: number;
   academicYear: number;
+  editPlan?: {
+    course_code: string;
+    course_name?: string;
+    credits: number;
+    category_name?: string;
+    grade?: string;
+  };
 }
 
 export default function ManualCourseForm({
@@ -28,17 +35,19 @@ export default function ManualCourseForm({
   semester,
   yearOfStudy,
   academicYear,
+  editPlan,
 }: ManualCourseFormProps) {
-  // Only get what we need from the store
   const addCoursePlan = useAppStore((state) => state.addCoursePlan);
+  const editCoursePlan = useAppStore((state) => state.editCoursePlan);
   const categories = useAppStore((state) => state.categories);
+  const isEditMode = !!editPlan;
 
   const [formData, setFormData] = useState({
-    course_code: "",
-    course_name: "",
-    credits: 3,
-    category_name: "",
-    grade: "",
+    course_code: editPlan?.course_code || "",
+    course_name: editPlan?.course_name || "",
+    credits: editPlan?.credits ?? 3,
+    category_name: editPlan?.category_name || "",
+    grade: editPlan?.grade || "",
     isCF: false,
   });
 
@@ -72,34 +81,33 @@ export default function ManualCourseForm({
 
       try {
         const courseCode = formData.course_code.trim().toUpperCase();
-        const newPlan: Plan = {
-          course_code: courseCode,
-          course_name: formData.course_name.trim() || undefined,
-          academicYear: academicYear,
-          yearOfStudy: yearOfStudy,
-          semester: semester,
-          credits: formData.credits,
-          category_name: formData.category_name || undefined,
-          grade: formData.grade || undefined,
-        };
 
-        const course = addCoursePlan(newPlan);
-        console.log(course);
+        if (isEditMode && editPlan) {
+          editCoursePlan(editPlan.course_code, {
+            course_code: courseCode,
+            course_name: formData.course_name.trim() || undefined,
+            credits: formData.credits,
+            category_name: formData.category_name || undefined,
+            grade: formData.grade || undefined,
+          }, yearOfStudy, semester);
+        } else {
+          const newPlan: Plan = {
+            course_code: courseCode,
+            course_name: formData.course_name.trim() || undefined,
+            academicYear: academicYear,
+            yearOfStudy: yearOfStudy,
+            semester: semester,
+            credits: formData.credits,
+            category_name: formData.category_name || undefined,
+            grade: formData.grade || undefined,
+          };
+          addCoursePlan(newPlan);
 
-        // Reset form
-        setFormData({
-          course_code: "",
-          course_name: "",
-          credits: 3,
-          category_name: "",
-          grade: "",
-          isCF: false,
-        });
-        setErrors({});
-
-        if (onClose) {
-          onClose();
+          setFormData({ course_code: "", course_name: "", credits: 3, category_name: "", grade: "", isCF: false });
+          setErrors({});
         }
+
+        if (onClose) onClose();
       } catch (error) {
         console.error("Error adding course:", error);
         toast.error("Failed to add course", {
@@ -292,8 +300,8 @@ export default function ManualCourseForm({
           disabled={isSubmitting}
           className="flex-1 h-12 bg-chula hover:bg-chula-hover text-white font-medium shadow-sm text-base disabled:opacity-50"
         >
-          <Plus className="h-5 w-5 mr-2" />
-          {isSubmitting ? "Adding..." : "Add Course"}
+          {!isEditMode && <Plus className="h-5 w-5 mr-2" />}
+          {isSubmitting ? (isEditMode ? "Saving..." : "Adding...") : (isEditMode ? "Save Changes" : "Add Course")}
         </Button>
         {onClose && (
           <Button

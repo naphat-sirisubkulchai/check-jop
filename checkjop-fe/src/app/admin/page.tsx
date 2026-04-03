@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Filter, Search, Plus, RefreshCw, BookOpen, Calendar, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import { Filter, Search, Plus, RefreshCw, BookOpen, Calendar, CheckCircle, XCircle, Trash2, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { courseApi } from "@/api/courseApi";
 import { Button } from "@/components/ui/button";
@@ -234,15 +234,26 @@ export default function AdminHomePage() {
                         )}
                       </td>
                       <td className="p-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteCurriculum(c.id, c.nameTH)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          Delete
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => router.push(`/admin/curriculum/${c.id}`)}
+                            className="text-chula-active hover:text-chula-active hover:bg-chula-soft"
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            View
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteCurriculum(c.id, c.nameTH)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

@@ -1,6 +1,13 @@
 "use client";
 import SemesterCard from "./SemesterCard";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Trash2, ChevronDown, ChevronRight } from "lucide-react";
 import { useStudyPlan } from "@/hooks/useStudyPlan";
 import { useRouter } from "next/navigation";
@@ -18,10 +25,8 @@ export default function StudyPlanContainer() {
     totalCredits,
   } = useAppStore();
 
-  // Track which years are collapsed
-  const [collapsedYears, setCollapsedYears] = useState<Record<number, boolean>>(
-    {},
-  );
+  const [collapsedYears, setCollapsedYears] = useState<Record<number, boolean>>({});
+  const [showClearDialog, setShowClearDialog] = useState(false);
 
   const toggleYearCollapse = (year: number) => {
     setCollapsedYears((prev) => ({
@@ -31,14 +36,13 @@ export default function StudyPlanContainer() {
   };
 
   function handleClearStudyPlan(): void {
-    if (
-      confirm(
-        "Are you sure you want to clear the entire study plan? This action cannot be undone.",
-      )
-    ) {
-      clearStudyPlan();
-      clearExemptions();
-    }
+    setShowClearDialog(true);
+  }
+
+  function confirmClear(): void {
+    clearStudyPlan();
+    clearExemptions();
+    setShowClearDialog(false);
   }
 
   // Get years array from yearMapping
@@ -166,6 +170,26 @@ export default function StudyPlanContainer() {
           Calculate Eligibility
         </Button>
       </div>
+
+      <Dialog open={showClearDialog} onOpenChange={setShowClearDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+                <Trash2 className="h-5 w-5 text-red-600" />
+              </div>
+              <DialogTitle>Clear Study Plan?</DialogTitle>
+            </div>
+          </DialogHeader>
+          <p className="text-sm text-gray-600">
+            วิชาทั้งหมดและ exemptions จะถูกลบออก ไม่สามารถย้อนกลับได้
+          </p>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setShowClearDialog(false)}>ยกเลิก</Button>
+            <Button variant="destructive" onClick={confirmClear}>ลบทั้งหมด</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

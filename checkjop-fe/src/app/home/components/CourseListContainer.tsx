@@ -51,24 +51,25 @@ export default function CourseListContainer() {
         </div>
       );
     }
+    const sorted = filteredCourses
+      .map((course: any) => ({
+        course,
+        isInPlan: studyPlan.some((p) => p.course_code === course.code && p.grade !== "F"),
+      }))
+      .sort((a, b) => {
+        if (a.isInPlan !== b.isInPlan) return a.isInPlan ? 1 : -1;
+        return a.course.code.localeCompare(b.course.code);
+      });
+
     return (
       <div className="flex flex-col space-y-2">
-        {filteredCourses
-          .sort((a, b) => a.code.localeCompare(b.code))
-          .map((course: any) => {
-            // Check if course is already in study plan
-            const isInPlan = studyPlan.some(
-              (p) => p.course_code === course.code,
-            );
-
-            return (
-              <CourseLibraryCard
-                key={course.code}
-                course={course}
-                isInPlan={isInPlan}
-              />
-            );
-          })}
+        {sorted.map(({ course, isInPlan }) => (
+          <CourseLibraryCard
+            key={course.code}
+            course={course}
+            isInPlan={isInPlan}
+          />
+        ))}
       </div>
     );
   }, [filteredCourses, studyPlan]);

@@ -1,24 +1,36 @@
 "use client";
 
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Download, Upload, Settings } from "lucide-react";
 import { useAppStore } from "@/store/appStore";
 import { toast } from "sonner";
-import { readFileAsText, parseImportFile } from "@/utils/exportImport";
+import { parseImportFile, readFileAsText } from "@/utils/exportImport";
 import { courseApi } from "@/api/courseApi";
+import SettingsDialog from "@/components/SettingsDialog";
+
+const SAMPLES = [
+  { label: "Single Major – Intern", file: "/samples/course-1-intern.json" },
+  { label: "Single Major – CoopEd", file: "/samples/course-2-cooped.json" },
+  { label: "Major/Minor – Intern", file: "/samples/course-3-minor-intern.json" },
+  { label: "Major/Minor – Coop", file: "/samples/course-4-minor-coop.json" },
+];
 
 export default function HomeActions() {
-  const router = useRouter();
   const { studyPlan, exportStudyPlanToJSON, importStudyPlanFromData, setCourses } = useAppStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const handleExport = () => {
     if (studyPlan.length === 0) {
-      toast.error("Cannot export", {
-        description: "No study plan to export. Please add some courses first.",
-      });
+      toast.error("Cannot export", { description: "No study plan to export." });
       return;
     }
     exportStudyPlanToJSON();
@@ -27,77 +39,79 @@ export default function HomeActions() {
   const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
     try {
       const content = await readFileAsText(file);
-      const { data, validation } = parseImportFile(content);
-
-      if (!validation.isValid) {
-        toast.error("Import failed", {
-          description: validation.errors.join(", "),
-        });
-        return;
-      }
-
-      if (data) {
-        if (data.selectedCurriculum?.nameTH) {
-          const curriculumData = await courseApi.getCurriculumByName(
-            data.selectedCurriculum.nameTH
-          );
-          if (curriculumData?.courses) {
-            setCourses(curriculumData.courses);
-          }
-        }
-
-        importStudyPlanFromData(data);
-        toast.success("Study plan imported successfully", {
-          description: `Imported ${data.studyPlan.length} courses`,
-        });
-      }
+      await importFromContent(content);
     } catch (error) {
       toast.error("Import failed", {
-        description: error instanceof Error ? error.message : "Unknown error occurred",
+        description: error instanceof Error ? error.message : "Unknown error",
       });
     }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const importFromContent = async (content: string) => {
+    const { data, validation } = parseImportFile(content);
+    if (!validation.isValid) {
+      toast.error("Import failed", { description: validation.errors.join(", ") });
+      return;
+    }
+    if (data) {
+      if (data.selectedCurriculum?.nameTH) {
+        const curriculumData = await courseApi.getCurriculumByName(data.selectedCurriculum.nameTH);
+        if (curriculumData?.courses) setCourses(curriculumData.courses);
+      }
+      importStudyPlanFromData(data);
+      toast.success("Imported successfully", {
+        description: `Loaded ${data.studyPlan.length} courses`,
+      });
+    }
+  };
+
+  const handleLoadSample = async (file: string) => {
+    try {
+      const res = await fetch(file);
+      const content = await res.text();
+      await importFromContent(content);
+    } catch {
+      toast.error("Failed to load sample");
     }
   };
 
   return (
     <>
-      <Button
-        onClick={() => router.push("/setup")}
-        variant="outline"
-        className="bg-white shadow-sm"
-      >
+      <Button onClick={() => setSettingsOpen(true)} variant="outline" className="bg-white shadow-sm">
         <Settings className="h-4 w-4 mr-2" />
         Settings
       </Button>
-      <Button
-        onClick={() => fileInputRef.current?.click()}
-        variant="outline"
-        className="bg-white shadow-sm"
+
+      <Select
+        value=""
+        onValueChange={(file) => { handleLoadSample(file); }}
       >
+        <SelectTrigger className="bg-white shadow-sm border-input w-36">
+          <SelectValue placeholder="Load Sample" />
+        </SelectTrigger>
+        <SelectContent>
+          {SAMPLES.map((s) => (
+            <SelectItem key={s.file} value={s.file}>
+              {s.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="bg-white shadow-sm">
         <Upload className="h-4 w-4 mr-2" />
         Import
       </Button>
-      <Button
-        onClick={handleExport}
-        variant="outline"
-        className="bg-white shadow-sm"
-      >
+      <Button onClick={handleExport} variant="outline" className="bg-white shadow-sm">
         <Download className="h-4 w-4 mr-2" />
         Export
       </Button>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".json"
-        onChange={handleImport}
-        className="hidden"
-      />
+      <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
+
+      <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
     </>
   );
 }

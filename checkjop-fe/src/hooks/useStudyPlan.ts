@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useAppStore } from "@/store/appStore";
 import { gradeService } from "@/api/gradApi";
+import { toast } from "sonner";
 
 /**
  * Hook for managing study plan operations
@@ -26,11 +27,13 @@ export function useStudyPlan() {
     try {
       // Validation
       if (!selectedCurriculum) {
-        throw new Error("Please select a curriculum before calculating.");
+        toast.error("Please select a curriculum before calculating.");
+        return;
       }
 
       if (!studyPlan.length) {
-        throw new Error("Please add courses to your study plan before calculating.");
+        toast.error("Please add courses to your study plan before calculating.");
+        return;
       }
 
       // Save to cookie before calculating

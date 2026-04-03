@@ -33,6 +33,21 @@ function transformCurriculum(data: any): Curriculum {
   };
 }
 
+// Convert prerequisite_groups / corequisite_groups to a human-readable string
+// Logic: multiple groups = AND between groups; is_or_group=true = OR within group
+function groupsToString(groups: any[]): string {
+  if (!groups || groups.length === 0) return "";
+  const parts = groups.map((g: any) => {
+    const codes: string[] = (g.prerequisite_courses ?? [])
+      .map((pc: any) => pc.prerequisite_course?.code)
+      .filter(Boolean);
+    if (codes.length === 0) return null;
+    if (codes.length === 1) return codes[0];
+    return g.is_or_group ? `(${codes.join(" OR ")})` : `(${codes.join(" AND ")})`;
+  }).filter(Boolean);
+  return parts.join(" AND ");
+}
+
 export const courseApi = {
   // -------- Curricula --------
   async getCurriculumByName(curriculumName: string | null): Promise<any> {
@@ -71,6 +86,55 @@ export const courseApi = {
       return curriculum;
     } catch (error) {
       console.error("Error fetching and transforming curriculum:", error);
+      return null;
+    }
+  },
+
+  async getCurriculumById(id: string): Promise<Curriculum | null> {
+    try {
+      const [currRes, coursesRes] = await Promise.all([
+        apiClient.get(`/curricula/${id}`),
+        apiClient.get(`/courses/`),
+      ]);
+      if (currRes.status !== 200) throw new Error(currRes.statusText);
+
+      const curriculum = transformCurriculum(currRes.data);
+
+      // Filter courses for this curriculum, deduplicate by code (same course exists per year), convert groups → string
+      const allCourses: any[] = Array.isArray(coursesRes.data) ? coursesRes.data : [];
+      const seenCodes = new Set<string>();
+      const curriculumCourses: Course[] = allCourses
+        .filter((c: any) => c.curriculum_id === id)
+        .filter((c: any) => {
+          if (seenCodes.has(c.code)) return false;
+          seenCodes.add(c.code);
+          return true;
+        })
+        .map((c: any): Course => ({
+          code: c.code,
+          nameTH: c.name_th,
+          nameEN: c.name_en,
+          credits: c.credits,
+          categoryId: c.category_id,
+          prerequisites: groupsToString(c.prerequisite_groups ?? []),
+          corequisites: groupsToString(c.corequisite_groups ?? []),
+          curriculum: curriculum.nameTH,
+          year: c.year,
+        }));
+
+      // Attach courses to categories
+      if (curriculum.categories) {
+        curriculum.categories = curriculum.categories.map((cat: any) => {
+          const courses = curriculumCourses
+            .filter((c) => c.categoryId === cat.id)
+            .sort((a, b) => a.code.localeCompare(b.code));
+          return { ...cat, courses };
+        });
+      }
+
+      curriculum.courses = curriculumCourses;
+      return curriculum;
+    } catch {
       return null;
     }
   },

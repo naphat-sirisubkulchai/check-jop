@@ -1,0 +1,427 @@
+{
+  "version": "1.0.0",
+  "exportDate": "2026-04-02T16:24:38.793Z",
+  "studyPlan": [
+    {
+      "course_code": "2301107",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301173",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 4,
+      "grade": "B"
+    },
+    {
+      "course_code": "2304121",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "C+"
+    },
+    {
+      "course_code": "2304181",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 1,
+      "grade": "B"
+    },
+    {
+      "course_code": "2303107",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2303108",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 1,
+      "grade": "B+"
+    },
+    {
+      "course_code": "5500111",
+      "academicYear": 2566,
+      "semester": 1,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301108",
+      "academicYear": 2566,
+      "semester": 2,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301220",
+      "academicYear": 2566,
+      "semester": 2,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301260",
+      "academicYear": 2566,
+      "semester": 2,
+      "yearOfStudy": 1,
+      "credits": 4,
+      "grade": "B"
+    },
+    {
+      "course_code": "2301180",
+      "academicYear": 2566,
+      "semester": 2,
+      "yearOfStudy": 1,
+      "credits": 2,
+      "grade": "A"
+    },
+    {
+      "course_code": "2302161",
+      "academicYear": 2566,
+      "semester": 2,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2302113",
+      "academicYear": 2566,
+      "semester": 2,
+      "yearOfStudy": 1,
+      "credits": 1,
+      "grade": "A"
+    },
+    {
+      "course_code": "5500112",
+      "academicYear": 2566,
+      "semester": 2,
+      "yearOfStudy": 1,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301286",
+      "academicYear": 2567,
+      "semester": 1,
+      "yearOfStudy": 2,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301230",
+      "academicYear": 2567,
+      "semester": 1,
+      "yearOfStudy": 2,
+      "credits": 2,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301265",
+      "academicYear": 2567,
+      "semester": 1,
+      "yearOfStudy": 2,
+      "credits": 4,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301274",
+      "academicYear": 2567,
+      "semester": 1,
+      "yearOfStudy": 2,
+      "credits": 3,
+      "grade": "B"
+    },
+    {
+      "course_code": "GEN ED I (3)",
+      "course_name": "Gen Ed I (3)",
+      "academicYear": 2567,
+      "yearOfStudy": 2,
+      "semester": 1,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไป-สหศาสตร์",
+      "grade": "A"
+    },
+    {
+      "course_code": "GEN ED II (3)",
+      "course_name": "Gen Ed II (3)",
+      "academicYear": 2567,
+      "yearOfStudy": 2,
+      "semester": 1,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไป-วิทย์",
+      "grade": "A"
+    },
+    {
+      "course_code": "FREE I (3)",
+      "course_name": "Free I (3)",
+      "academicYear": 2567,
+      "yearOfStudy": 2,
+      "semester": 1,
+      "credits": 3,
+      "category_name": "วิชาเสรี",
+      "grade": "A"
+    },
+    {
+      "course_code": "2301234",
+      "academicYear": 2567,
+      "semester": 2,
+      "yearOfStudy": 2,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301266",
+      "academicYear": 2567,
+      "semester": 2,
+      "yearOfStudy": 2,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301375",
+      "academicYear": 2567,
+      "semester": 2,
+      "yearOfStudy": 2,
+      "credits": 3,
+      "grade": "B"
+    },
+    {
+      "course_code": "2301275",
+      "academicYear": 2567,
+      "semester": 2,
+      "yearOfStudy": 2,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "5500204",
+      "academicYear": 2567,
+      "semester": 2,
+      "yearOfStudy": 2,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301250",
+      "yearOfStudy": 2,
+      "semester": 2,
+      "academicYear": 2567,
+      "credits": 3,
+      "grade": "B"
+    },
+    {
+      "course_code": "GEN ED III (3)",
+      "course_name": "Gen Ed III (3)",
+      "academicYear": 2567,
+      "yearOfStudy": 2,
+      "semester": 2,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไป-มนุษย์",
+      "grade": "A"
+    },
+    {
+      "course_code": "2301379",
+      "academicYear": 2568,
+      "semester": 1,
+      "yearOfStudy": 3,
+      "credits": 3,
+      "grade": "B"
+    },
+    {
+      "course_code": "2301367",
+      "academicYear": 2568,
+      "semester": 1,
+      "yearOfStudy": 3,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301371",
+      "academicYear": 2568,
+      "semester": 1,
+      "yearOfStudy": 3,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301369",
+      "yearOfStudy": 3,
+      "semester": 1,
+      "academicYear": 2568,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301475",
+      "yearOfStudy": 3,
+      "semester": 1,
+      "academicYear": 2568,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301456",
+      "yearOfStudy": 3,
+      "semester": 1,
+      "academicYear": 2568,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301360",
+      "academicYear": 2568,
+      "semester": 2,
+      "yearOfStudy": 3,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301399",
+      "academicYear": 2568,
+      "semester": 2,
+      "yearOfStudy": 3,
+      "credits": 1,
+      "grade": "B"
+    },
+    {
+      "course_code": "2300398",
+      "academicYear": 2568,
+      "semester": 2,
+      "yearOfStudy": 3,
+      "credits": 1,
+      "grade": "A"
+    },
+    {
+      "course_code": "5500496",
+      "academicYear": 2568,
+      "semester": 2,
+      "yearOfStudy": 3,
+      "credits": 3,
+      "grade": "B"
+    },
+    {
+      "course_code": "2301361",
+      "yearOfStudy": 3,
+      "semester": 2,
+      "academicYear": 2568,
+      "credits": 3,
+      "grade": "B+"
+    },
+    {
+      "course_code": "2301377",
+      "yearOfStudy": 3,
+      "semester": 2,
+      "academicYear": 2568,
+      "credits": 3,
+      "grade": "C+"
+    },
+    {
+      "course_code": "2301455",
+      "yearOfStudy": 3,
+      "semester": 2,
+      "academicYear": 2568,
+      "credits": 3,
+      "grade": "A"
+    },
+    {
+      "course_code": "GEN ED IV (3)",
+      "course_name": "Gen Ed IV (3)",
+      "academicYear": 2568,
+      "yearOfStudy": 3,
+      "semester": 2,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไป-สังคม",
+      "grade": "A"
+    },
+    {
+      "course_code": "2301498",
+      "academicYear": 2569,
+      "semester": 1,
+      "yearOfStudy": 4,
+      "credits": 6,
+      "grade": "A"
+    },
+    {
+      "course_code": "2301480",
+      "academicYear": 2569,
+      "semester": 2,
+      "yearOfStudy": 4,
+      "credits": 1,
+      "grade": "A"
+    },
+    {
+      "course_code": "GEN ED V (3)",
+      "course_name": "Gen Ed V (3)",
+      "academicYear": 2569,
+      "yearOfStudy": 4,
+      "semester": 2,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไปกลุ่มพิเศษ",
+      "grade": "A"
+    },
+    {
+      "course_code": "GEN ED VI (3)",
+      "course_name": "Gen Ed VI (3)",
+      "academicYear": 2569,
+      "yearOfStudy": 4,
+      "semester": 2,
+      "credits": 3,
+      "category_name": "วิชาศึกษาทั่วไปกลุ่มพิเศษ",
+      "grade": "A"
+    },
+    {
+      "course_code": "FREE II (3)",
+      "course_name": "Free II (3)",
+      "academicYear": 2568,
+      "yearOfStudy": 3,
+      "semester": 1,
+      "credits": 3,
+      "category_name": "วิชาเสรี",
+      "grade": "A"
+    },
+    {
+      "course_code": "2301350",
+      "yearOfStudy": 4,
+      "semester": 2,
+      "academicYear": 2569,
+      "credits": 3,
+      "grade": "B+"
+    }
+  ],
+  "exemptions": [],
+  "selectedCurriculum": {
+    "id": "507e12f3-3a24-4472-bb54-8af60ccf70f7",
+    "nameTH": "เอกเดี่ยว-สหกิจ-2566",
+    "nameEN": "Course Dependency-Single major/Cooped",
+    "year": 66,
+    "minTotalCredits": 136,
+    "isActive": true,
+    "categories": [],
+    "courses": []
+  },
+  "yearMapping": {
+    "1": 2566,
+    "2": 2567,
+    "3": 2568,
+    "4": 2569
+  },
+  "metadata": {
+    "totalCredits": 136,
+    "coursesCount": 48
+  }
+}

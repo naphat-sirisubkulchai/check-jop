@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { GripVertical } from "lucide-react";
 
 interface CourseLibraryCardProps {
   course: {
@@ -17,7 +18,7 @@ export default function CourseLibraryCard({ course, isInPlan }: CourseLibraryCar
       className={`p-2 transition-all border ${
         isInPlan
           ? "bg-gray-50 border-gray-300 opacity-60 cursor-not-allowed"
-          : "bg-surface border-gray-200 hover:shadow-md hover:border-blue-400 hover:scale-[1.01] cursor-grab active:cursor-grabbing"
+          : "bg-surface border-gray-200 hover:shadow-md hover:border-chula-active hover:scale-[1.01] cursor-grab active:cursor-grabbing"
       }`}
       draggable={!isInPlan}
       onDragStart={(e) => {
@@ -35,6 +36,10 @@ export default function CourseLibraryCard({ course, isInPlan }: CourseLibraryCar
       }}
     >
       <div className="flex items-center gap-1 px-1">
+        {!isInPlan && (
+          <GripVertical className="h-5 w-5 text-gray-300 flex-shrink-0 -ml-1" />
+        )}
+
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
             <span className={`text-sm font-semibold ${
@@ -49,9 +54,6 @@ export default function CourseLibraryCard({ course, isInPlan }: CourseLibraryCar
             {course.name_en}
           </p>
         </div>
-
-        {/* Grip Icon*/}
-        {/* <GripVertical className="h-5 w-5 text-gray-400 flex-shrink-0 mt-0.5" /> */}
 
         {/* Credits */}
         <Badge className="rounded-full bg-chula-soft text-chula-active">{course.credits} cr.</Badge>
