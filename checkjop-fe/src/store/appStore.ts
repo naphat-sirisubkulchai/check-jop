@@ -168,11 +168,13 @@ export const useAppStore = create(
 
       // Import study plan from parsed data
       importStudyPlanFromData: (data: StudyPlanExportData) => {
+        const totalCredits = data.studyPlan.reduce((sum: number, course: any) => sum + course.credits, 0);
         set({
           studyPlan: data.studyPlan,
           exemptions: data.exemptions,
           selectedCurriculum: data.selectedCurriculum,
           yearMapping: data.yearMapping || null,
+          totalCredits,
         });
       },
 
@@ -189,11 +191,13 @@ export const useAppStore = create(
         const { data, validation } = loadStudyPlanFromCookie();
 
         if (validation.isValid && data) {
+          const totalCredits = data.studyPlan.reduce((sum: number, course: any) => sum + course.credits, 0);
           set({
             studyPlan: data.studyPlan,
             exemptions: data.exemptions,
             selectedCurriculum: data.selectedCurriculum,
             yearMapping: data.yearMapping || null,
+            totalCredits,
           });
           console.log("Study plan loaded from cookie");
           return true;
