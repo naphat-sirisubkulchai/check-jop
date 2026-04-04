@@ -44,7 +44,19 @@ export default function CourseCard({
     removeExemption,
     selectedCurriculum,
     yearMapping,
+    categories,
   } = useAppStore();
+
+  // Build elective code set
+  const electiveCodes = new Set<string>();
+  for (const cat of categories) {
+    const name = (cat as any).nameTH ?? (cat as any).name_th ?? "";
+    if (name.includes("เลือก") && !name.includes("เสรี")) {
+      for (const c of (cat as any).courses ?? []) {
+        if (c.code) electiveCodes.add(c.code);
+      }
+    }
+  }
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isCFLoading, setIsCFLoading] = useState(false);
@@ -158,7 +170,11 @@ export default function CourseCard({
     <>
       <div
         className={`group relative flex gap-2 rounded-lg border bg-white p-2.5 shadow-sm transition-all hover:shadow-md cursor-grab active:cursor-grabbing overflow-hidden ${
-          isManualCourse ? "border-l-4 border-l-chula-active bg-gradient-to-r from-chula-soft/30 to-white" : "border-l-4 border-l-chula-soft bg-gradient-to-r from-chula-soft/30 to-white hover:border-chula-active/30"
+          isManualCourse
+            ? "border-l-4 border-l-chula-active bg-gradient-to-r from-chula-soft/30 to-white"
+            : electiveCodes.has(courseCode)
+              ? "border-l-4 border-l-sci-normal bg-gradient-to-r from-sci-soft/30 to-white hover:border-sci-hover/30"
+              : "border-l-4 border-l-chula-soft bg-gradient-to-r from-chula-soft/30 to-white hover:border-chula-active/30"
         }`}
         draggable={true}
         onDragStart={(e) => {

@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { parseImportFile, readFileAsText } from "@/utils/exportImport";
 import { courseApi } from "@/api/courseApi";
 import SettingsDialog from "@/components/SettingsDialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const SAMPLES = [
   { label: "Single Major – Intern", file: "/samples/course-1-intern.json" },
@@ -80,6 +81,33 @@ export default function HomeActions() {
 
   return (
     <>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white shadow-sm text-xs text-gray-600 cursor-default select-none">
+              <span className="inline-block w-2.5 h-2.5 rounded-sm border-l-2 border-sci-normal bg-sci-soft/40" />
+              <span>วิชาเลือก</span>
+              <span className="mx-1 text-gray-300">|</span>
+              <span className="inline-block w-2.5 h-2.5 rounded-sm border-l-2 border-chula-active bg-chula-soft/40" />
+              <span>วิชาอื่น</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="left" className="max-w-52 text-xs">
+            <p className="font-semibold mb-1">ความหมายของสี</p>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-3 h-3 rounded-sm border-l-2 border-sci-normal bg-sci-soft/40 flex-shrink-0" />
+                <span>วิชาเลือก / วิชาบังคับเลือก</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-3 h-3 rounded-sm border-l-2 border-chula-active bg-chula-soft/40 flex-shrink-0" />
+                <span>วิชาทั่วไป / วิชาแกน / วิชาอื่นๆ</span>
+              </div>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
       <Button onClick={() => setSettingsOpen(true)} variant="outline" className="bg-white shadow-sm">
         <Settings className="h-4 w-4 mr-2" />
         Settings

@@ -158,7 +158,13 @@ export function PrintTranscriptView({ result }: PrintTranscriptViewProps) {
     const COOP_CODES = ["2300398", "2301399", "2301498", "2301497", "2301499"];
     const allFieldRows = getRows(CAT_FIELD);
     const internRows = allFieldRows.filter(r => INTERN_CODES.includes(r.code));
-    const coopRows = allFieldRows.filter(r => COOP_CODES.includes(r.code));
+    let coopRows = allFieldRows.filter(r => COOP_CODES.includes(r.code));
+    // 2301498 may only exist in สหกิจ curriculum — add it from studyPlan if taken
+    if (!coopRows.find(r => r.code === "2301498")) {
+      const p = planMap.get("2301498");
+      if (p) coopRows = [...coopRows, { code: "2301498", name: "CO-OPERATIVE EDUCATION", semYr: semYrLabel(p), credits: p.credits, grade: p.grade ?? "" }];
+      else coopRows = [...coopRows, { code: "2301498", name: "CO-OPERATIVE EDUCATION", semYr: "", credits: 6, grade: "" }];
+    }
     // Deduplicate 2301399 — show in whichever the student took
     const takenCodes = new Set(allFieldRows.filter(r => r.grade).map(r => r.code));
     col1Blocks.push({ header: headerLabel(CAT_FIELD), rows: [] });

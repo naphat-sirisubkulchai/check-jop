@@ -10,7 +10,20 @@ import CourseLibraryCard from "./CourseLibraryCard";
 import { Button } from "@/components/ui/button";
 
 export default function CourseListContainer() {
-  const { courses, studyPlan } = useAppStore();
+  const { courses, studyPlan, categories } = useAppStore();
+
+  const electiveCodes = useMemo(() => {
+    const s = new Set<string>();
+    for (const cat of categories) {
+      const name = (cat as any).nameTH ?? (cat as any).name_th ?? "";
+      if (name.includes("เลือก") && !name.includes("เสรี")) {
+        for (const c of (cat as any).courses ?? []) {
+          if (c.code) s.add(c.code);
+        }
+      }
+    }
+    return s;
+  }, [categories]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -68,6 +81,7 @@ export default function CourseListContainer() {
             key={course.code}
             course={course}
             isInPlan={isInPlan}
+            isElective={electiveCodes.has(course.code)}
           />
         ))}
       </div>

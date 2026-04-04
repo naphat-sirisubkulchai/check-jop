@@ -10,15 +10,18 @@ interface CourseLibraryCardProps {
     credits: number;
   };
   isInPlan: boolean;
+  isElective?: boolean;
 }
 
-export default function CourseLibraryCard({ course, isInPlan }: CourseLibraryCardProps) {
+export default function CourseLibraryCard({ course, isInPlan, isElective }: CourseLibraryCardProps) {
   return (
     <Card
       className={`p-2 transition-all border ${
         isInPlan
           ? "bg-gray-50 border-gray-300 opacity-60 cursor-not-allowed"
-          : "bg-surface border-gray-200 hover:shadow-md hover:border-chula-active hover:scale-[1.01] cursor-grab active:cursor-grabbing"
+          : isElective
+            ? "bg-surface border-gray-200 hover:shadow-md hover:border-sci-normal hover:scale-[1.01] cursor-grab active:cursor-grabbing"
+            : "bg-surface border-gray-200 hover:shadow-md hover:border-chula-active hover:scale-[1.01] cursor-grab active:cursor-grabbing"
       }`}
       draggable={!isInPlan}
       onDragStart={(e) => {

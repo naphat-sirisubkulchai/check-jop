@@ -11,7 +11,18 @@ interface StudyPlanRecordCardProps {
 }
 
 export function StudyPlanRecordCard({ studyPlan }: StudyPlanRecordCardProps) {
-  const { getCourseByCode } = useAppStore();
+  const { getCourseByCode, categories } = useAppStore();
+
+  // Build set of course codes in elective categories
+  const electiveCodes = new Set<string>();
+  for (const cat of categories) {
+    const name = (cat as any).nameTH ?? (cat as any).name_th ?? "";
+    if (name.includes("เลือก") && !name.includes("เสรี")) {
+      for (const c of (cat as any).courses ?? []) {
+        if (c.code) electiveCodes.add(c.code);
+      }
+    }
+  }
 
   // Group courses by year and semester
   const groupedPlan = studyPlan.reduce((acc, plan) => {
@@ -109,10 +120,11 @@ export function StudyPlanRecordCard({ studyPlan }: StudyPlanRecordCardProps) {
                           const courseName = course?.name_en || plan.course_name || "Manual Course";
                           // const courseCategory = course?.category_name || null;
 
+                          const isElective = electiveCodes.has(plan.course_code);
                           return (
                             <div
                               key={`${plan.course_code}-${idx}`}
-                              className="bg-white rounded-md p-2.5 border border-gray-200 shadow-sm"
+                              className={`bg-white rounded-md p-2.5 border shadow-sm ${isElective ? "border-l-4 border-l-sci-normal border-gray-200" : "border border-gray-200"}`}
                             >
                               <div className="flex items-start justify-between gap-2">
                                 <div className="flex-1 min-w-0">
