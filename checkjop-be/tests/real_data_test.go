@@ -200,7 +200,8 @@ func TestRealData_Case6_Coreq_WrongTerm(t *testing.T) {
 // ─── 7. Coreq → F → Coreq again ──────────────────────────────────────────────
 // sensitive_case/7.Co->F->Co.json
 // 2303107 sem1 F, 2303108 sem1 F, 2303108 sem2 B (retake without coreq)
-// ผลลัพธ์ที่คาดหวัง: violation ในเทอม 2 — 2303108 ขาด coreq 2303107
+// ผลลัพธ์ที่คาดหวัง: ไม่มี violation ในเทอม 2
+// เพราะ 2303107 เคยลงมาก่อนแล้ว (sem1) ไม่ว่าจะได้เกรด F → ผ่านเงื่อนไข coreq ข้อ 2.1.1
 
 func TestRealData_Case7_Coreq_F_Retake(t *testing.T) {
 	repos := mustLoadRealData(t)
@@ -221,15 +222,11 @@ func TestRealData_Case7_Coreq_F_Retake(t *testing.T) {
 
 	violations, err := svc.ValidatePrerequisites(progress)
 	assert.NoError(t, err)
-	// sem1: 2303108 with coreq 2303107 same term → valid (both F)
-	// sem2: 2303108 retaken but 2303107 not retaken → missing coreq
-	found := false
+	// sem1: 2303108 กับ 2303107 ลงพร้อมกัน → valid
+	// sem2: 2303108 retake — 2303107 เคยลงมาก่อน (sem1, F) → นับว่าผ่านเงื่อนไข coreq แล้ว → valid
 	for _, v := range violations {
-		if v.CourseCode == "2303108" {
-			found = true
-		}
+		assert.NotEqual(t, "2303108", v.CourseCode, "2303108 sem2 should not violate: coreq 2303107 was taken before (F counts)")
 	}
-	assert.True(t, found, "expected violation for 2303108 retake without coreq")
 }
 
 // ─── 8a. OR C.F. — no permission: 2301234 ต้องการ 2301220 OR C.F. ──────────

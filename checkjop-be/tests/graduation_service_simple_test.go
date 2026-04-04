@@ -220,13 +220,13 @@ func TestValidatePrerequisites_Simple_Corequisites_WrongTerm(t *testing.T) {
 	graduationService, _, mockCourse, _ := setupGraduationService()
 	setupCourseMocks(mockCourse)
 
-	// Taking 2301172 and its corequisite 2301170 in different terms (should fail)
+	// Taking 2301172 in sem1 but its corequisite 2301170 in sem2 (taken AFTER - should fail)
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301170", Year: 2023, Semester: 1, Credits: 3},
-			{CourseCode: "2301172", Year: 2023, Semester: 2, Credits: 1}, // Different term - should fail
+			{CourseCode: "2301170", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - should fail
+			{CourseCode: "2301172", Year: 2023, Semester: 1, Credits: 1},
 		},
 	}
 
@@ -237,6 +237,26 @@ func TestValidatePrerequisites_Simple_Corequisites_WrongTerm(t *testing.T) {
 	assert.Equal(t, "2301172", violations[0].CourseCode)
 	assert.True(t, violations[0].TakenInWrongTerm)
 	assert.Contains(t, violations[0].CoreqsTakenInWrongTerm, "2301170")
+}
+
+func TestValidatePrerequisites_Simple_Corequisites_TakenBefore_Valid(t *testing.T) {
+	graduationService, _, mockCourse, _ := setupGraduationService()
+	setupCourseMocks(mockCourse)
+
+	// Taking 2301172 in sem2 and its corequisite 2301170 in sem1 (taken BEFORE - should pass)
+	progress := &model.StudentProgress{
+		CurriculumID:  uuid.New(),
+		AdmissionYear: 2023,
+		Courses: []model.CompletedCourse{
+			{CourseCode: "2301170", Year: 2023, Semester: 1, Credits: 3}, // Taken before - OK
+			{CourseCode: "2301172", Year: 2023, Semester: 2, Credits: 1},
+		},
+	}
+
+	violations, err := (*graduationService).ValidatePrerequisites(progress)
+
+	assert.NoError(t, err)
+	assert.Empty(t, violations)
 }
 
 func TestValidatePrerequisites_Simple_Corequisites_SameTerm(t *testing.T) {

@@ -345,13 +345,13 @@ func TestValidatePrerequisites_Corequisites_2301172(t *testing.T) {
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(course2301172, nil)
 
-	// Test: Taking corequisites in different terms (should violate)
+	// Test: Corequisite taken AFTER the course (should violate)
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301170", Year: 2023, Semester: 1, Credits: 3},
-			{CourseCode: "2301172", Year: 2023, Semester: 2, Credits: 1}, // Different term
+			{CourseCode: "2301170", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301172", Year: 2023, Semester: 1, Credits: 1},
 		},
 	}
 
@@ -566,8 +566,8 @@ func TestValidatePrerequisites_MultipleViolationTypes(t *testing.T) {
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301172", Year: 2023, Semester: 1, Credits: 1}, // Corequisite in different term
-			{CourseCode: "2301260", Year: 2023, Semester: 2, Credits: 4}, // Missing prerequisite 2301170
+			{CourseCode: "2301172", Year: 2023, Semester: 2, Credits: 1}, // Corequisite taken AFTER - wrong term
+			{CourseCode: "2301260", Year: 2023, Semester: 1, Credits: 4}, // Missing prerequisite 2301170
 		},
 	}
 
@@ -577,7 +577,7 @@ func TestValidatePrerequisites_MultipleViolationTypes(t *testing.T) {
 	assert.Len(t, violations, 1)
 	assert.Equal(t, "2301260", violations[0].CourseCode)
 	assert.Contains(t, violations[0].MissingPrereqs, "2301170")         // Missing prerequisite
-	assert.Contains(t, violations[0].CoreqsTakenInWrongTerm, "2301172") // Wrong term corequisite
+	assert.Contains(t, violations[0].CoreqsTakenInWrongTerm, "2301172") // Wrong term corequisite (taken after)
 	assert.True(t, violations[0].TakenInWrongTerm)
 }
 
@@ -717,14 +717,14 @@ func TestValidatePrerequisites_Corequisites_OrGroup_WrongTerm(t *testing.T) {
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301190", mock.Anything, mock.Anything).Return(course2301190, nil)
 
-	// Taking course with corequisites in different terms
+	// Taking course with corequisites taken AFTER (should violate)
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301170", Year: 2023, Semester: 1, Credits: 3}, // Different term
-			{CourseCode: "2301173", Year: 2023, Semester: 1, Credits: 3}, // Different term
-			{CourseCode: "2301190", Year: 2023, Semester: 2, Credits: 2}, // Different from both
+			{CourseCode: "2301170", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301173", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301190", Year: 2023, Semester: 1, Credits: 2}, // Course taken first
 		},
 	}
 
@@ -1500,14 +1500,14 @@ func TestValidatePrerequisites_MixedCorequisiteOrAndRequirements_WrongTerm(t *te
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301700", mock.Anything, mock.Anything).Return(course2301700, nil)
 
-	// Taking course with all corequisites taken in different terms
+	// Taking course with all corequisites taken AFTER (should violate)
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301274", Year: 2023, Semester: 1, Credits: 3}, // Different term
-			{CourseCode: "2301279", Year: 2023, Semester: 1, Credits: 3}, // Different term
-			{CourseCode: "2301700", Year: 2023, Semester: 2, Credits: 4}, // Target course (different term)
+			{CourseCode: "2301274", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301279", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301700", Year: 2023, Semester: 1, Credits: 4}, // Target course taken first
 		},
 	}
 
@@ -1552,14 +1552,14 @@ func TestValidatePrerequisites_ComplexCorequisiteOrGroups_BothGroupsWrongTerm(t 
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, mock.Anything).Return(course2301600, nil)
 
-	// Taking course with both OR groups satisfied but in different terms
+	// Taking course with both OR groups satisfied but coreqs taken AFTER (should violate)
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301265", Year: 2023, Semester: 1, Credits: 3}, // Different term
-			{CourseCode: "2301369", Year: 2023, Semester: 1, Credits: 3}, // Different term
-			{CourseCode: "2301600", Year: 2023, Semester: 2, Credits: 4}, // Target course (different term)
+			{CourseCode: "2301265", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301369", Year: 2023, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301600", Year: 2023, Semester: 1, Credits: 4}, // Target course taken first
 		},
 	}
 
@@ -1773,14 +1773,14 @@ func TestValidatePrerequisites_MixedPrereqCoreq_CorequisiteWrongTerm(t *testing.
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, mock.Anything).Return(course2301200, nil)
 
-	// Prerequisite taken before but corequisite in wrong term
+	// Prerequisite taken before but corequisite taken AFTER (wrong term)
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301170", Year: 2023, Semester: 1, Credits: 3}, // Prerequisite (before)
-			{CourseCode: "2301173", Year: 2023, Semester: 1, Credits: 3}, // Corequisite (wrong term)
-			{CourseCode: "2301200", Year: 2023, Semester: 2, Credits: 4}, // Target course
+			{CourseCode: "2301170", Year: 2023, Semester: 1, Credits: 3}, // Prerequisite (before) - OK
+			{CourseCode: "2301173", Year: 2024, Semester: 1, Credits: 3}, // Corequisite taken AFTER - wrong
+			{CourseCode: "2301200", Year: 2023, Semester: 2, Credits: 4}, // Target course (sem2)
 		},
 	}
 
@@ -1822,13 +1822,13 @@ func TestValidatePrerequisites_MixedPrereqCoreq_BothViolations(t *testing.T) {
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, mock.Anything).Return(course2301200, nil)
 
-	// Missing prerequisite AND corequisite in wrong term
+	// Missing prerequisite AND corequisite taken AFTER (wrong term)
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2023,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301173", Year: 2023, Semester: 1, Credits: 3}, // Corequisite (wrong term)
-			{CourseCode: "2301200", Year: 2023, Semester: 2, Credits: 4}, // Missing prerequisite 2301170
+			{CourseCode: "2301173", Year: 2023, Semester: 2, Credits: 3}, // Corequisite taken AFTER - wrong
+			{CourseCode: "2301200", Year: 2023, Semester: 1, Credits: 4}, // Missing prerequisite 2301170
 		},
 	}
 
@@ -2246,13 +2246,13 @@ func TestGuide_Case5_Corequisite_2301362(t *testing.T) {
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
 	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
 
-	// Test: Different term violation
+	// Test: Corequisite taken AFTER the course (violation)
 	progressWrongTerm := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
 		AdmissionYear: 2566,
 		Courses: []model.CompletedCourse{
-			{CourseCode: "2301279", Year: 2024, Semester: 1, Credits: 3},
-			{CourseCode: "2301362", Year: 2024, Semester: 2, Credits: 3},
+			{CourseCode: "2301279", Year: 2024, Semester: 2, Credits: 3}, // Taken AFTER - violation
+			{CourseCode: "2301362", Year: 2024, Semester: 1, Credits: 3},
 		},
 	}
 	violations, _ := (*graduationService).ValidatePrerequisites(progressWrongTerm)
