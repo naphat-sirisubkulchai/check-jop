@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { GraduationResult, Plan } from "@/types";
 import { useAppStore } from "@/store/appStore";
 
@@ -113,8 +114,12 @@ export function PrintTranscriptView({ result }: PrintTranscriptViewProps) {
   const CAT_RESEARCH = findCat("วิจัย");
   const CAT_FIELD = findCat("ประสบการณ์ภาคสนาม");
   const CAT_MAJOR = findCat("เฉพาะด้าน");
-  const CAT_MINOR = findCat("โท");
-  const CAT_ELECTIVE = allCatNames.find((n: string) => n.includes("เลือก") && !n.includes("บังคับ") && !n.includes("เสรี")) ?? "";
+  // Also check result.category_results for categories not in store (e.g. กลุ่มวิชาโท)
+  const allResultCatNames = result.category_results.map(r => r.category_name);
+  const CAT_MINOR = allCatNames.find((n: string) => n.includes("วิชาโท") || n === "กลุ่มวิชาโท")
+    ?? allResultCatNames.find(n => n.includes("วิชาโท") || n === "กลุ่มวิชาโท")
+    ?? "";
+  const CAT_ELECTIVE = allCatNames.find((n: string) => n.includes("เลือก") && !n.includes("บังคับ") && !n.includes("เสรี") && !n.includes("โท")) ?? "";
 
   // ── Build the three-column "block" list ──────────────────────────
   // Each block = { header, rows[] } mapped to col index (0=left,1=mid,2=right)
@@ -149,14 +154,50 @@ export function PrintTranscriptView({ result }: PrintTranscriptViewProps) {
   if (CAT_CORE_ELECTIVE) col1Blocks.push({ header: headerLabel(CAT_CORE_ELECTIVE), rows: getRows(CAT_CORE_ELECTIVE) });
   if (CAT_RESEARCH) col1Blocks.push({ header: headerLabel(CAT_RESEARCH), rows: getRows(CAT_RESEARCH), isSubHeader: true });
   if (CAT_FIELD) {
+    const INTERN_CODES = ["2301397", "2301398", "2301399", "2301487"];
+    const COOP_CODES = ["2300398", "2301399", "2301498", "2301497", "2301499"];
+    const allFieldRows = getRows(CAT_FIELD);
+    const internRows = allFieldRows.filter(r => INTERN_CODES.includes(r.code));
+    const coopRows = allFieldRows.filter(r => COOP_CODES.includes(r.code));
+    // Deduplicate 2301399 — show in whichever the student took
+    const takenCodes = new Set(allFieldRows.filter(r => r.grade).map(r => r.code));
     col1Blocks.push({ header: headerLabel(CAT_FIELD), rows: [] });
-    col1Blocks.push({ header: "แบบที่ 1 ฝึกงาน", rows: getRows(CAT_FIELD), isSubHeader: true });
+    col1Blocks.push({ header: "แบบที่ 1 ฝึกงาน", rows: internRows, isSubHeader: true });
+    col1Blocks.push({ header: "แบบที่ 2 สหกิจศึกษา", rows: coopRows.filter(r => r.code !== "2301399" || !takenCodes.has("2301398")), isSubHeader: true });
   }
+
+  // Detect curriculum type from nameTH (supports both camelCase and snake_case)
+  const curriculumNameTH = (selectedCurriculum as any)?.nameTH ?? (selectedCurriculum as any)?.name_th ?? "";
+  const isMinorCurriculum = CAT_MINOR !== "" && curriculumNameTH.includes("โท");
 
   // ── Col 2 ──
   if (CAT_MAJOR) col2Blocks.push({ header: headerLabel(CAT_MAJOR), rows: getRows(CAT_MAJOR) });
-  if (CAT_MINOR) col2Blocks.push({ header: headerLabel(CAT_MINOR), rows: [...getManualRows(CAT_MINOR), ...getRows(CAT_MINOR)] });
-  if (CAT_ELECTIVE) col2Blocks.push({ header: headerLabel(CAT_ELECTIVE), rows: [...getManualRows(CAT_ELECTIVE), ...getRows(CAT_ELECTIVE)].filter(r => r.grade) });
+  if (CAT_MINOR && isMinorCurriculum) col2Blocks.push({ header: headerLabel(CAT_MINOR), rows: [...getManualRows(CAT_MINOR), ...getRows(CAT_MINOR)] });
+  if (CAT_ELECTIVE) {
+    // Build set of all course codes in this category
+    const cat = catMap.get(CAT_ELECTIVE);
+    console.log("[elective] cat:", cat, "courses:", cat?.courses?.length, "planMap size:", planMap.size);
+    const electiveCodes = new Set((cat?.courses ?? []).map((c: any) => c.code as string));
+    // Find studyPlan entries whose code is in elective category AND has a grade
+    const electiveRows: CourseRow[] = studyPlan
+      .filter(p => electiveCodes.has(p.course_code) && p.grade && p.grade !== "")
+      .map(p => {
+        const courseInfo = (cat?.courses ?? []).find((c: any) => c.code === p.course_code);
+        return {
+          code: p.course_code,
+          name: (field(courseInfo, "nameEN", "name_en") ?? p.course_name ?? p.course_code).toUpperCase().slice(0, 22),
+          semYr: semYrLabel(p),
+          credits: p.credits,
+          grade: p.grade ?? "",
+        };
+      });
+    col2Blocks.push({ header: headerLabel(CAT_ELECTIVE), rows: electiveRows });
+  }
+  // Fallback: if วิชาเลือก not in store categories but in result, show from studyPlan
+  if (!CAT_ELECTIVE) {
+    const electiveName = allResultCatNames.find(n => n.includes("เลือก") && !n.includes("บังคับ") && !n.includes("เสรี"));
+    if (electiveName) col2Blocks.push({ header: headerLabel(electiveName), rows: studyPlan.filter(p => p.category_name === electiveName || p.category_name?.includes("เลือก")).map(p => ({ code: p.course_code, name: (p.course_name ?? p.course_code).toUpperCase().slice(0,22), semYr: semYrLabel(p), credits: p.credits, grade: p.grade ?? "" })).filter(r => r.grade) });
+  }
 
   // ── Flatten each column into a sequence of {isHeader, text, row} ──
   type Cell = { isHeader: boolean; isSubHeader?: boolean; text?: string; row?: CourseRow };
@@ -262,13 +303,13 @@ export function PrintTranscriptView({ result }: PrintTranscriptViewProps) {
         <thead>
           <tr>
             {[0, 1, 2].map((ci) => (
-              <>
-                <th key={`h${ci}a`} style={{ ...HDR, textAlign: "center" }}>รหัสวิชา</th>
-                <th key={`h${ci}b`} style={{ ...HDR, textAlign: "center" }}>ชื่อวิชา</th>
-                <th key={`h${ci}c`} style={{ ...HDR, textAlign: "center" }}>ปี/ภาค</th>
-                <th key={`h${ci}d`} style={{ ...HDR, textAlign: "center" }}>หน่วยกิต</th>
-                <th key={`h${ci}e`} style={{ ...HDR, textAlign: "center" }}>เกรด</th>
-              </>
+              <React.Fragment key={ci}>
+                <th style={{ ...HDR, textAlign: "center" }}>รหัสวิชา</th>
+                <th style={{ ...HDR, textAlign: "center" }}>ชื่อวิชา</th>
+                <th style={{ ...HDR, textAlign: "center" }}>ปี/ภาค</th>
+                <th style={{ ...HDR, textAlign: "center" }}>หน่วยกิต</th>
+                <th style={{ ...HDR, textAlign: "center" }}>เกรด</th>
+              </React.Fragment>
             ))}
           </tr>
         </thead>

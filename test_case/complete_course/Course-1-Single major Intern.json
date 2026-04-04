@@ -407,7 +407,8 @@
       "academicYear": 2568,
       "semester": 1,
       "yearOfStudy": 3,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     }
   ],
   "exemptions": [],

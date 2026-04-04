@@ -355,7 +355,8 @@
       "academicYear": 2569,
       "semester": 2,
       "yearOfStudy": 4,
-      "credits": 1
+      "credits": 1,
+      "grade": "B"
     },
     {
       "course_code": "MINOR V (3)",
@@ -408,7 +409,8 @@
       "academicYear": 2568,
       "semester": 2,
       "yearOfStudy": 3,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     }
   ],
   "exemptions": [],

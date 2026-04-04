@@ -7,126 +7,144 @@
       "academicYear": 2566,
       "semester": 1,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301173",
       "academicYear": 2566,
       "semester": 1,
       "yearOfStudy": 1,
-      "credits": 4
+      "credits": 4,
+      "grade": "B"
     },
     {
       "course_code": "2304121",
       "academicYear": 2566,
       "semester": 1,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2304181",
       "academicYear": 2566,
       "semester": 1,
       "yearOfStudy": 1,
-      "credits": 1
+      "credits": 1,
+      "grade": "B"
     },
     {
       "course_code": "2303107",
       "academicYear": 2566,
       "semester": 1,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2303108",
       "academicYear": 2566,
       "semester": 1,
       "yearOfStudy": 1,
-      "credits": 1
+      "credits": 1,
+      "grade": "B"
     },
     {
       "course_code": "5500111",
       "academicYear": 2566,
       "semester": 1,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301108",
       "academicYear": 2566,
       "semester": 2,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301220",
       "academicYear": 2566,
       "semester": 2,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301260",
       "academicYear": 2566,
       "semester": 2,
       "yearOfStudy": 1,
-      "credits": 4
+      "credits": 4,
+      "grade": "B"
     },
     {
       "course_code": "2301180",
       "academicYear": 2566,
       "semester": 2,
       "yearOfStudy": 1,
-      "credits": 2
+      "credits": 2,
+      "grade": "B"
     },
     {
       "course_code": "2302161",
       "academicYear": 2566,
       "semester": 2,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2302113",
       "academicYear": 2566,
       "semester": 2,
       "yearOfStudy": 1,
-      "credits": 1
+      "credits": 1,
+      "grade": "B"
     },
     {
       "course_code": "5500112",
       "academicYear": 2566,
       "semester": 2,
       "yearOfStudy": 1,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301286",
       "academicYear": 2567,
       "semester": 1,
       "yearOfStudy": 2,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301230",
       "academicYear": 2567,
       "semester": 1,
       "yearOfStudy": 2,
-      "credits": 2
+      "credits": 2,
+      "grade": "B"
     },
     {
       "course_code": "2301265",
       "academicYear": 2567,
       "semester": 1,
       "yearOfStudy": 2,
-      "credits": 4
+      "credits": 4,
+      "grade": "B"
     },
     {
       "course_code": "2301274",
       "academicYear": 2567,
       "semester": 1,
       "yearOfStudy": 2,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "MINOR I (3)",
@@ -153,35 +171,40 @@
       "academicYear": 2567,
       "semester": 2,
       "yearOfStudy": 2,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301266",
       "academicYear": 2567,
       "semester": 2,
       "yearOfStudy": 2,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301375",
       "academicYear": 2567,
       "semester": 2,
       "yearOfStudy": 2,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301275",
       "academicYear": 2567,
       "semester": 2,
       "yearOfStudy": 2,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "5500204",
       "academicYear": 2567,
       "semester": 2,
       "yearOfStudy": 2,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "MINOR II (3)",
@@ -198,21 +221,24 @@
       "academicYear": 2568,
       "semester": 1,
       "yearOfStudy": 3,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301367",
       "academicYear": 2568,
       "semester": 1,
       "yearOfStudy": 3,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301371",
       "academicYear": 2568,
       "semester": 1,
       "yearOfStudy": 3,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "MINOR III (3)",
@@ -229,7 +255,8 @@
       "yearOfStudy": 3,
       "semester": 2,
       "academicYear": 2568,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "FREE I (3)",
@@ -246,28 +273,32 @@
       "academicYear": 2568,
       "semester": 2,
       "yearOfStudy": 3,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301399",
       "academicYear": 2568,
       "semester": 2,
       "yearOfStudy": 3,
-      "credits": 1
+      "credits": 1,
+      "grade": "B"
     },
     {
       "course_code": "2301397",
       "academicYear": 2568,
       "semester": 2,
       "yearOfStudy": 3,
-      "credits": 1
+      "credits": 1,
+      "grade": "B"
     },
     {
       "course_code": "5500496",
       "academicYear": 2568,
       "semester": 2,
       "yearOfStudy": 3,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "MINOR IV (3)",
@@ -284,7 +315,8 @@
       "yearOfStudy": 3,
       "semester": 1,
       "academicYear": 2568,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "GEN ED II (3)",
@@ -301,14 +333,16 @@
       "academicYear": 2569,
       "semester": 1,
       "yearOfStudy": 4,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "2301487",
       "academicYear": 2569,
       "semester": 1,
       "yearOfStudy": 4,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "MINOR V (3)",
@@ -345,14 +379,16 @@
       "academicYear": 2569,
       "semester": 2,
       "yearOfStudy": 4,
-      "credits": 1
+      "credits": 1,
+      "grade": "B"
     },
     {
       "course_code": "2301377",
       "yearOfStudy": 4,
       "semester": 2,
       "academicYear": 2569,
-      "credits": 3
+      "credits": 3,
+      "grade": "B"
     },
     {
       "course_code": "GEN ED IV (3)",
@@ -361,7 +397,8 @@
       "yearOfStudy": 4,
       "semester": 2,
       "credits": 3,
-      "category_name": "วิชาศึกษาทั่วไป"
+      "category_name": "วิชาศึกษาทั่วไป",
+      "grade": "B"
     },
     {
       "course_code": "GEN ED V (3)",
