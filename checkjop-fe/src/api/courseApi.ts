@@ -70,7 +70,7 @@ export const courseApi = {
         curriculum.categories?.forEach((cat: any) => {
           // Filter courses by category and remove duplicates by course code
           const coursesForCategory = curriculum
-            .courses!.filter((course: any) => course.categoryId === cat.id);
+            .courses!.filter((course: any) => (course.categoryId ?? course.category_id) === cat.id);
 
           // Deduplicate by course code using Map
           const uniqueCoursesMap = new Map(

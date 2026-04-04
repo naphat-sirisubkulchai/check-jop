@@ -4,6 +4,7 @@ import { GraduationResult } from "@/types";
 import { useMemo, useEffect } from "react";
 import { OverviewCards } from "./OverviewCards";
 import { CategoryResultsCard } from "./CategoryResultsCard";
+import { PrintTranscriptView } from "./PrintTranscriptView";
 import { PrerequisiteViolationsCard } from "./PrerequisiteViolationsCard";
 import { CreditLimitViolationsCard } from "./CreditLimitViolationsCard";
 import { StudyPlanRecordCard } from "./StudyPlanRecordCard";
@@ -16,11 +17,9 @@ interface ResultSectionProps {
   result: GraduationResult;
 }
 
-export function ResultSection({
-  result,
-}: ResultSectionProps) {
+export function ResultSection({ result }: ResultSectionProps) {
   const { trackEvent } = useAnalytics();
-  const { studyPlan } = useAppStore();
+  const { studyPlan, printFormat } = useAppStore();
 
   const admissionYear = useMemo(
     () => studyPlan.length > 0 ? Math.min(...studyPlan.map((p) => p.academicYear)) : 0,
@@ -37,7 +36,6 @@ export function ResultSection({
     [result]
   );
 
-  // Track when results are viewed
   useEffect(() => {
     if (result) {
       trackEvent("result_viewed", {
@@ -54,63 +52,58 @@ export function ResultSection({
   return (
     <div className="space-y-6">
       <div aria-label="Graduation analysis results" className="space-y-6">
-          {/* Graduation Eligibility Banner */}
-        <GraduationBanner result={result} />
 
-        {/* Missing Catalog Years Warning */}
-        <MissingCatalogYearsCard
-          missingCatalogYears={result.missing_catalog_years}
-          admissionYear={admissionYear}
-          catalogYearFallbacks={result.catalog_year_fallbacks}
-        />
-
-        {/* Progress Overview Cards */}
-        <OverviewCards
-          result={result}
-          satisfiedCategories={satisfiedCategories}
-          totalCategories={totalCategories}
-        />
-
-        {/* Print-only: Category Requirements below overview cards */}
+        {/* ── Print-only content ── */}
         <div className="hidden print:block">
-          <CategoryResultsCard categoryResults={result.category_results} />
-        </div>
-
-        {/* Print-only: Violations side by side below overview cards */}
-        <div className="hidden print:grid print:grid-cols-2 print:gap-4">
-          <PrerequisiteViolationsCard violations={result.prerequisite_violations} />
-          <CreditLimitViolationsCard violations={result.credit_limit_violations} />
-        </div>
-
-        {/* Two Column Layout: Study Plan Record & Analysis Results */}
-        <div className="result-two-col grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - Study Plan Record */}
-          <div className="lg:sticky lg:top-6 lg:self-start print:static">
-            <StudyPlanRecordCard studyPlan={studyPlan} />
-          </div>
-
-          {/* Right Column - Analysis Results */}
-          <div className="space-y-6">
-            {/* Category Details - hidden on print (shown at top instead) */}
-            <div className="print:hidden">
+          {printFormat === "transcript" ? (
+            <PrintTranscriptView result={result} />
+          ) : (
+            /* summary: banner + overview + full two-col layout rendered inline */
+            <div className="space-y-4">
+              <GraduationBanner result={result} />
+              <OverviewCards
+                result={result}
+                satisfiedCategories={satisfiedCategories}
+                totalCategories={totalCategories}
+              />
               <CategoryResultsCard categoryResults={result.category_results} />
+              <div className="grid grid-cols-2 gap-4">
+                <PrerequisiteViolationsCard violations={result.prerequisite_violations} />
+                <CreditLimitViolationsCard violations={result.credit_limit_violations} />
+              </div>
+              <StudyPlanRecordCard studyPlan={studyPlan} />
             </div>
+          )}
+        </div>
 
-            {/* Pre and Co requisite Violations */}
-            <div className="print:hidden">
-              <PrerequisiteViolationsCard
-                violations={result.prerequisite_violations}
-              />
+        {/* ── Screen-only content ── */}
+        <div className="print:hidden space-y-6">
+          <GraduationBanner result={result} />
+
+          <MissingCatalogYearsCard
+            missingCatalogYears={result.missing_catalog_years}
+            admissionYear={admissionYear}
+            catalogYearFallbacks={result.catalog_year_fallbacks}
+          />
+
+          <OverviewCards
+            result={result}
+            satisfiedCategories={satisfiedCategories}
+            totalCategories={totalCategories}
+          />
+
+          <div className="result-two-col grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="lg:sticky lg:top-6 lg:self-start">
+              <StudyPlanRecordCard studyPlan={studyPlan} />
             </div>
-
-            {/* Credit Limit Violations */}
-            <div className="print:hidden">
-              <CreditLimitViolationsCard
-                violations={result.credit_limit_violations}
-              />
+            <div className="space-y-6">
+              <CategoryResultsCard categoryResults={result.category_results} />
+              <PrerequisiteViolationsCard violations={result.prerequisite_violations} />
+              <CreditLimitViolationsCard violations={result.credit_limit_violations} />
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

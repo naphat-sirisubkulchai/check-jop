@@ -233,9 +233,6 @@
   /* Tailwind print utilities */
   .print\:hidden { display: none !important; }
   .hidden.print\:block, [class~="hidden"][class~="print:block"] { display: block !important; }
-  .hidden.print\:grid, [class~="hidden"][class~="print:grid"] { display: grid !important; }
-  [class~="print:grid-cols-2"] { grid-template-columns: 1fr 1fr !important; }
-  [class~="print:gap-4"] { gap: 16px !important; }
 
   /* Unblock scrollable containers */
   .overflow-hidden { overflow: visible !important; }

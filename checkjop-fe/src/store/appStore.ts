@@ -30,6 +30,7 @@ export const useAppStore = create(
       isLoading: false as boolean,
       error: null as string | null,
       totalCredits: 0 as number,
+      printFormat: "transcript" as "transcript" | "summary",
 
       // Course Data Actions
       setCourses: (courses: any[]) => set({ courses }),
@@ -131,6 +132,7 @@ export const useAppStore = create(
       setResult: (result: any) => set({ result }),
       setIsLoading: (isLoading: boolean) => set({ isLoading }),
       setError: (error: string | null) => set({ error }),
+      setPrintFormat: (printFormat: "transcript" | "summary") => set({ printFormat }),
 
       // Selectors
       getCourseByCode: (code: string) => {
