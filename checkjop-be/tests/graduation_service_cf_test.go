@@ -27,8 +27,8 @@ func TestValidatePrerequisites_CFCondition_NoPermission(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, 2023).Return(course2301199, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, mock.Anything).Return(course2301199, nil)
 
 	// Taking course without prerequisite and without C.F. permission
 	progress := &model.StudentProgress{
@@ -66,8 +66,8 @@ func TestValidatePrerequisites_CFCondition_WithPermission(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, 2023).Return(course2301199, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, mock.Anything).Return(course2301199, nil)
 
 	// Taking course without prerequisite BUT WITH C.F. permission
 	progress := &model.StudentProgress{
@@ -102,8 +102,8 @@ func TestValidatePrerequisites_CFCondition_WithPrerequisite(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, 2023).Return(course2301199, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, mock.Anything).Return(course2301199, nil)
 
 	// Taking course WITH prerequisite (no need for C.F.)
 	progress := &model.StudentProgress{
@@ -137,7 +137,7 @@ func TestValidatePrerequisites_CFCondition_OnlyCF_NoPermission(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, 2023).Return(course2301199, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, mock.Anything).Return(course2301199, nil)
 
 	// Taking course without C.F. permission
 	progress := &model.StudentProgress{
@@ -173,7 +173,7 @@ func TestValidatePrerequisites_CFCondition_OnlyCF_WithPermission(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, 2023).Return(course2301199, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, mock.Anything).Return(course2301199, nil)
 
 	// Taking course WITH C.F. permission
 	progress := &model.StudentProgress{
@@ -201,7 +201,7 @@ func TestValidatePrerequisites_CFCondition_WrongCourse(t *testing.T) {
 		PrerequisiteGroups: []model.PrerequisiteGroup{}, // No prerequisites at all
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
 
 	// Taking course that doesn't allow C.F., but with C.F. exemption for it
 	// This should cause an error during validation
@@ -239,7 +239,7 @@ func TestValidatePrerequisites_CFCondition_ValidExemption(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, 2023).Return(course2301199, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, mock.Anything).Return(course2301199, nil)
 
 	// Taking course WITH valid C.F. permission
 	progress := &model.StudentProgress{
@@ -266,8 +266,8 @@ func TestValidatePrerequisites_CFCondition_InvalidExemptionNonExistentCourse(t *
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, 2023).Return(course2301199, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "NONEXISTENT", mock.Anything, 2023).Return(nil, fmt.Errorf("course not found"))
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301199", mock.Anything, mock.Anything).Return(course2301199, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "NONEXISTENT", mock.Anything, mock.Anything).Return(nil, fmt.Errorf("course not found"))
 
 	// Exemption for a course that doesn't exist
 	progress := &model.StudentProgress{

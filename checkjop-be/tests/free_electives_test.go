@@ -26,8 +26,8 @@ func TestFreeElective_WithPrerequisites_ShouldCheck(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301999", mock.Anything, 2023).Return(course2301999, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301999", mock.Anything, mock.Anything).Return(course2301999, nil)
 
 	// Student takes 2301999 as a Free Elective, but hasn't taken 2301170
 	progress := &model.StudentProgress{
@@ -57,7 +57,7 @@ func TestFreeElective_NotInDB_ShouldSkip(t *testing.T) {
 
 	// Course 9999999 is a Free Elective and NOT in the DB
 	// Mock repository returns error for this course
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "9999999", mock.Anything, 2023).Return((*model.Course)(nil), assert.AnError)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "9999999", mock.Anything, mock.Anything).Return((*model.Course)(nil), assert.AnError)
 
 	// Student takes 9999999 as a Free Elective
 	progress := &model.StudentProgress{
@@ -101,7 +101,7 @@ func TestFreeElective_NotInDB_CountsCredits(t *testing.T) {
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	// Course 9999999 is NOT in the DB
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "9999999", mock.Anything, 2023).Return((*model.Course)(nil), assert.AnError)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "9999999", mock.Anything, mock.Anything).Return((*model.Course)(nil), assert.AnError)
 
 	// Student takes 9999999 as a Free Elective
 	progress := &model.StudentProgress{

@@ -16,6 +16,9 @@ func setupGraduationService() (*service.GraduationService, *MockCurriculumReposi
 	mockCourse := &MockCourseRepository{}
 	mockCategory := &MockCategoryRepository{}
 
+	mockCourse.On("CatalogYearExists", mock.Anything, mock.Anything).Return(true).Maybe()
+	mockCourse.On("CourseHasCFOptionInAnyCatalogYear", mock.Anything, mock.Anything).Return(false).Maybe()
+
 	graduationService := service.NewGraduationService(mockCurriculum, mockCourse, mockCategory)
 
 	return &graduationService, mockCurriculum, mockCourse, mockCategory
@@ -31,7 +34,7 @@ func TestValidatePrerequisites_NoPrerequisites(t *testing.T) {
 		CorequisiteGroups:  []model.PrerequisiteGroup{},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
 
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
@@ -75,9 +78,9 @@ func TestValidatePrerequisites_BasicPrerequisite_2301180(t *testing.T) {
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, 2023).Return(course2301180, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(course2301173, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, mock.Anything).Return(course2301180, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(course2301173, nil)
 
 	// Test case: Taking 2301180 without any prerequisites
 	progress := &model.StudentProgress{
@@ -115,8 +118,8 @@ func TestValidatePrerequisites_PrerequisiteSatisfied_2301180(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, 2023).Return(course2301180, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, mock.Anything).Return(course2301180, nil)
 
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
@@ -149,8 +152,8 @@ func TestValidatePrerequisites_StrictTermRequirement_2301230(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301220", mock.Anything, 2023).Return(&model.Course{Code: "2301220"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301230", mock.Anything, 2023).Return(course2301230, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301220", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301220"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301230", mock.Anything, mock.Anything).Return(course2301230, nil)
 
 	// Test case: Taking both courses in same term (should violate strict requirement)
 	progress := &model.StudentProgress{
@@ -205,9 +208,9 @@ func TestValidatePrerequisites_TransitiveChain_DataStructures(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, 2023).Return(course2301260, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, 2023).Return(course2301263, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301365", mock.Anything, 2023).Return(course2301365, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, mock.Anything).Return(course2301260, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, mock.Anything).Return(course2301263, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301365", mock.Anything, mock.Anything).Return(course2301365, nil)
 
 	// Test: Taking 2301365 without any prerequisites
 	progress := &model.StudentProgress{
@@ -256,9 +259,9 @@ func TestValidatePrerequisites_ComplexPrerequisites_2301367(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, 2023).Return(&model.Course{Code: "2301263"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301375", mock.Anything, 2023).Return(course2301375, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301367", mock.Anything, 2023).Return(course2301367, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301263"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301375", mock.Anything, mock.Anything).Return(course2301375, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301367", mock.Anything, mock.Anything).Return(course2301367, nil)
 
 	// Test partial prerequisite chain
 	progress := &model.StudentProgress{
@@ -339,8 +342,8 @@ func TestValidatePrerequisites_Corequisites_2301172(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, 2023).Return(course2301172, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(course2301172, nil)
 
 	// Test: Taking corequisites in different terms (should violate)
 	progress := &model.StudentProgress{
@@ -377,8 +380,8 @@ func TestValidatePrerequisites_Corequisites_SameTerm_Valid(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, 2023).Return(course2301172, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(course2301172, nil)
 
 	// Test: Taking corequisites in same term (should be valid)
 	progress := &model.StudentProgress{
@@ -480,9 +483,9 @@ func TestCheckGraduation_Complete(t *testing.T) {
 	}
 
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(course2301173, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, 2023).Return(course2301260, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(course2301173, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, mock.Anything).Return(course2301260, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	progress := &model.StudentProgress{
@@ -515,7 +518,7 @@ func TestCheckGraduation_Complete(t *testing.T) {
 func TestValidatePrerequisites_CourseNotFound(t *testing.T) {
 	graduationService, _, mockCourse, _ := setupGraduationService()
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "INVALID", mock.Anything, 2023).Return((*model.Course)(nil), errors.New("course not found"))
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "INVALID", mock.Anything, mock.Anything).Return((*model.Course)(nil), errors.New("course not found"))
 
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
@@ -555,9 +558,9 @@ func TestValidatePrerequisites_MultipleViolationTypes(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, 2023).Return(&model.Course{Code: "2301172"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, 2023).Return(course2301260, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301172"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, mock.Anything).Return(course2301260, nil)
 
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
@@ -596,8 +599,8 @@ func TestValidatePrerequisites_Corequisites_MissingCorequisite(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301185", mock.Anything, 2023).Return(course2301185, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301185", mock.Anything, mock.Anything).Return(course2301185, nil)
 
 	// Taking course without its required corequisite
 	progress := &model.StudentProgress{
@@ -634,9 +637,9 @@ func TestValidatePrerequisites_Corequisites_OrGroup_OneSatisfied(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301190", mock.Anything, 2023).Return(course2301190, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301190", mock.Anything, mock.Anything).Return(course2301190, nil)
 
 	// Taking course with one of the OR corequisites (should pass)
 	progress := &model.StudentProgress{
@@ -671,9 +674,9 @@ func TestValidatePrerequisites_Corequisites_OrGroup_NoneSatisfied(t *testing.T) 
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301190", mock.Anything, 2023).Return(course2301190, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301190", mock.Anything, mock.Anything).Return(course2301190, nil)
 
 	// Taking course without any of the OR corequisites
 	progress := &model.StudentProgress{
@@ -710,9 +713,9 @@ func TestValidatePrerequisites_Corequisites_OrGroup_WrongTerm(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301190", mock.Anything, 2023).Return(course2301190, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301190", mock.Anything, mock.Anything).Return(course2301190, nil)
 
 	// Taking course with corequisites in different terms
 	progress := &model.StudentProgress{
@@ -752,9 +755,9 @@ func TestValidatePrerequisites_Corequisites_AndGroup_AllSatisfied(t *testing.T) 
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, 2023).Return(course2301195, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, mock.Anything).Return(course2301195, nil)
 
 	// Taking course with both required corequisites in same term
 	progress := &model.StudentProgress{
@@ -790,9 +793,9 @@ func TestValidatePrerequisites_Corequisites_AndGroup_OneMissing(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, 2023).Return(course2301195, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, mock.Anything).Return(course2301195, nil)
 
 	// Taking course with only one of the required AND corequisites
 	progress := &model.StudentProgress{
@@ -841,9 +844,9 @@ func TestValidatePrerequisites_Corequisites_TransitiveCorequisites(t *testing.T)
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, 2023).Return(course2301172, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, 2023).Return(course2301195, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(course2301172, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, mock.Anything).Return(course2301195, nil)
 
 	// Taking 2301195 with complete transitive corequisite chain (should pass)
 	progress := &model.StudentProgress{
@@ -890,9 +893,9 @@ func TestValidatePrerequisites_Corequisites_TransitiveMissing(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, 2023).Return(course2301172, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, 2023).Return(course2301195, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(course2301172, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301195", mock.Anything, mock.Anything).Return(course2301195, nil)
 
 	// Taking 2301195 and 2301172 but missing the transitive corequisite 2301170
 	progress := &model.StudentProgress{
@@ -952,9 +955,9 @@ func TestValidatePrerequisites_Corequisites_MixedPrereqAndCoreq(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, 2023).Return(course2301200, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, mock.Anything).Return(course2301200, nil)
 
 	// Proper scenario: prerequisite taken before, corequisite taken same term
 	progress := &model.StudentProgress{
@@ -1000,11 +1003,11 @@ func TestValidatePrerequisites_ComplexOrGroups_BothGroupsSatisfied(t *testing.T)
 	}
 
 	// Mock prerequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2023).Return(&model.Course{Code: "2301369"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301400", mock.Anything, 2023).Return(course2301400, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301400", mock.Anything, mock.Anything).Return(course2301400, nil)
 
 	// Taking course with one from each OR group (should pass)
 	progress := &model.StudentProgress{
@@ -1048,11 +1051,11 @@ func TestValidatePrerequisites_ComplexOrGroups_OnlyFirstGroupSatisfied(t *testin
 	}
 
 	// Mock prerequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2023).Return(&model.Course{Code: "2301369"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301400", mock.Anything, 2023).Return(course2301400, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301400", mock.Anything, mock.Anything).Return(course2301400, nil)
 
 	// Taking course with only first OR group satisfied
 	progress := &model.StudentProgress{
@@ -1100,11 +1103,11 @@ func TestValidatePrerequisites_ComplexOrGroups_NoGroupsSatisfied(t *testing.T) {
 	}
 
 	// Mock prerequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2023).Return(&model.Course{Code: "2301369"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301400", mock.Anything, 2023).Return(course2301400, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301400", mock.Anything, mock.Anything).Return(course2301400, nil)
 
 	// Taking course with no prerequisites satisfied
 	progress := &model.StudentProgress{
@@ -1151,10 +1154,10 @@ func TestValidatePrerequisites_MixedOrAndRequirements_BothSatisfied(t *testing.T
 	}
 
 	// Mock prerequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301500", mock.Anything, 2023).Return(course2301500, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301500", mock.Anything, mock.Anything).Return(course2301500, nil)
 
 	// Taking course with OR group satisfied and single requirement satisfied
 	progress := &model.StudentProgress{
@@ -1197,10 +1200,10 @@ func TestValidatePrerequisites_MixedOrAndRequirements_OrGroupMissing(t *testing.
 	}
 
 	// Mock prerequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301500", mock.Anything, 2023).Return(course2301500, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301500", mock.Anything, mock.Anything).Return(course2301500, nil)
 
 	// Taking course with single requirement satisfied but OR group missing
 	progress := &model.StudentProgress{
@@ -1246,10 +1249,10 @@ func TestValidatePrerequisites_MixedOrAndRequirements_SingleRequirementMissing(t
 	}
 
 	// Mock prerequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301500", mock.Anything, 2023).Return(course2301500, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301500", mock.Anything, mock.Anything).Return(course2301500, nil)
 
 	// Taking course with OR group satisfied but single requirement missing
 	progress := &model.StudentProgress{
@@ -1298,11 +1301,11 @@ func TestValidatePrerequisites_ComplexCorequisiteOrGroups_BothGroupsSatisfied(t 
 	}
 
 	// Mock corequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2023).Return(&model.Course{Code: "2301369"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, 2023).Return(course2301600, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, mock.Anything).Return(course2301600, nil)
 
 	// Taking course with one from each OR group in same term (should pass)
 	progress := &model.StudentProgress{
@@ -1346,11 +1349,11 @@ func TestValidatePrerequisites_ComplexCorequisiteOrGroups_OnlyFirstGroupSatisfie
 	}
 
 	// Mock corequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2023).Return(&model.Course{Code: "2301369"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, 2023).Return(course2301600, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, mock.Anything).Return(course2301600, nil)
 
 	// Taking course with only first OR group satisfied in same term
 	progress := &model.StudentProgress{
@@ -1397,10 +1400,10 @@ func TestValidatePrerequisites_MixedCorequisiteOrAndRequirements_BothSatisfied(t
 	}
 
 	// Mock corequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301700", mock.Anything, 2023).Return(course2301700, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301700", mock.Anything, mock.Anything).Return(course2301700, nil)
 
 	// Taking course with OR group satisfied and single requirement satisfied in same term
 	progress := &model.StudentProgress{
@@ -1443,10 +1446,10 @@ func TestValidatePrerequisites_MixedCorequisiteOrAndRequirements_OrGroupMissing(
 	}
 
 	// Mock corequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301700", mock.Anything, 2023).Return(course2301700, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301700", mock.Anything, mock.Anything).Return(course2301700, nil)
 
 	// Taking course with single requirement satisfied but OR group missing in same term
 	progress := &model.StudentProgress{
@@ -1492,10 +1495,10 @@ func TestValidatePrerequisites_MixedCorequisiteOrAndRequirements_WrongTerm(t *te
 	}
 
 	// Mock corequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301700", mock.Anything, 2023).Return(course2301700, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301700", mock.Anything, mock.Anything).Return(course2301700, nil)
 
 	// Taking course with all corequisites taken in different terms
 	progress := &model.StudentProgress{
@@ -1543,11 +1546,11 @@ func TestValidatePrerequisites_ComplexCorequisiteOrGroups_BothGroupsWrongTerm(t 
 	}
 
 	// Mock corequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2023).Return(&model.Course{Code: "2301369"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, 2023).Return(course2301600, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, mock.Anything).Return(course2301600, nil)
 
 	// Taking course with both OR groups satisfied but in different terms
 	progress := &model.StudentProgress{
@@ -1595,11 +1598,11 @@ func TestValidatePrerequisites_ComplexCorequisiteOrGroups_NoGroupsSatisfied(t *t
 	}
 
 	// Mock corequisite courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, 2023).Return(&model.Course{Code: "2301265"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, 2023).Return(&model.Course{Code: "2301274"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2023).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2023).Return(&model.Course{Code: "2301369"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, 2023).Return(course2301600, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301265", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301265"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301274", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301274"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301600", mock.Anything, mock.Anything).Return(course2301600, nil)
 
 	// Taking course without any corequisites
 	progress := &model.StudentProgress{
@@ -1638,8 +1641,8 @@ func TestValidatePrerequisites_StrictTermRequirement_Satisfied(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301220", mock.Anything, 2023).Return(&model.Course{Code: "2301220"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301230", mock.Anything, 2023).Return(course2301230, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301220", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301220"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301230", mock.Anything, mock.Anything).Return(course2301230, nil)
 
 	// Test case: Taking prerequisite in earlier term (should pass)
 	progress := &model.StudentProgress{
@@ -1719,9 +1722,9 @@ func TestValidatePrerequisites_MixedPrereqCoreq_MissingPrerequisite(t *testing.T
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, 2023).Return(course2301200, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, mock.Anything).Return(course2301200, nil)
 
 	// Missing prerequisite but corequisite taken in same term
 	progress := &model.StudentProgress{
@@ -1766,9 +1769,9 @@ func TestValidatePrerequisites_MixedPrereqCoreq_CorequisiteWrongTerm(t *testing.
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, 2023).Return(course2301200, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, mock.Anything).Return(course2301200, nil)
 
 	// Prerequisite taken before but corequisite in wrong term
 	progress := &model.StudentProgress{
@@ -1815,9 +1818,9 @@ func TestValidatePrerequisites_MixedPrereqCoreq_BothViolations(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, 2023).Return(course2301200, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301200", mock.Anything, mock.Anything).Return(course2301200, nil)
 
 	// Missing prerequisite AND corequisite in wrong term
 	progress := &model.StudentProgress{
@@ -1872,9 +1875,9 @@ func TestValidatePrerequisites_TransitiveChain_Complete(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, 2023).Return(course2301260, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, 2023).Return(course2301263, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301365", mock.Anything, 2023).Return(course2301365, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, mock.Anything).Return(course2301260, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, mock.Anything).Return(course2301263, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301365", mock.Anything, mock.Anything).Return(course2301365, nil)
 
 	// Taking all courses in correct order
 	progress := &model.StudentProgress{
@@ -1916,7 +1919,7 @@ func TestCheckGraduation_InsufficientTotalCredits(t *testing.T) {
 	}
 
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	progress := &model.StudentProgress{
@@ -1962,8 +1965,8 @@ func TestCheckGraduation_CategoryNotSatisfied(t *testing.T) {
 	}
 
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(course2301173, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(course2301173, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	progress := &model.StudentProgress{
@@ -2018,9 +2021,9 @@ func TestCheckGraduation_HasPrerequisiteViolations(t *testing.T) {
 	}
 
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{Code: "2301173"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, 2023).Return(course2301180, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, mock.Anything).Return(course2301180, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	progress := &model.StudentProgress{
@@ -2059,7 +2062,7 @@ func TestCheckGraduation_HasCreditLimitViolations(t *testing.T) {
 	}
 
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	progress := &model.StudentProgress{
@@ -2104,8 +2107,8 @@ func TestCheckGraduation_MultipleCategoriesMissing(t *testing.T) {
 	}
 
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(course2301170, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(course2301173, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(course2301170, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(course2301173, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	progress := &model.StudentProgress{
@@ -2137,7 +2140,7 @@ func TestGuide_Case1_BasicPrerequisite_2301173(t *testing.T) {
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2566).Return(course2301173, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(course2301173, nil)
 
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),
@@ -2177,10 +2180,10 @@ func TestGuide_Case2_8_ComplexPrerequisite_2301260(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, 2566).Return(course2301260_Internal, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2566).Return(&model.Course{Code: "2301170"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, 2566).Return(&model.Course{Code: "2301172"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2566).Return(&model.Course{Code: "2301173"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, mock.Anything).Return(course2301260_Internal, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301170"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301172"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301173"}, nil)
 
 	// Sub-case 2.1: Missing all
 	progressFail := &model.StudentProgress{
@@ -2239,9 +2242,9 @@ func TestGuide_Case5_Corequisite_2301362(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301362", mock.Anything, 2566).Return(course2301362, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, 2566).Return(&model.Course{Code: "2301279"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, 2566).Return(&model.Course{Code: "2301369"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301362", mock.Anything, mock.Anything).Return(course2301362, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301279", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301279"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301369", mock.Anything, mock.Anything).Return(&model.Course{Code: "2301369"}, nil)
 
 	// Test: Different term violation
 	progressWrongTerm := &model.StudentProgress{
@@ -2289,7 +2292,7 @@ func TestGuide_Case15_CompleteGraduationCheck(t *testing.T) {
 	mockCategory.On("GetByCurriculumID", curriculumID).Return(categories, nil)
 
 	// Mock courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", mock.Anything, mock.Anything, 2566).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", mock.Anything, mock.Anything, mock.Anything).Return(&model.Course{
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 		CorequisiteGroups:  []model.PrerequisiteGroup{},
 	}, nil)

@@ -13,26 +13,26 @@ import (
 // Helper function to create complete mocks for courses
 func setupCourseMocks(mockCourse *MockCourseRepository) {
 	// Base courses with no prerequisites
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301170", mock.Anything, mock.Anything).Return(&model.Course{
 		Code:               "2301170",
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 		CorequisiteGroups:  []model.PrerequisiteGroup{},
 	}, nil)
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301173", mock.Anything, mock.Anything).Return(&model.Course{
 		Code:               "2301173",
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 		CorequisiteGroups:  []model.PrerequisiteGroup{},
 	}, nil)
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301220", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301220", mock.Anything, mock.Anything).Return(&model.Course{
 		Code:               "2301220",
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 		CorequisiteGroups:  []model.PrerequisiteGroup{},
 	}, nil)
 
 	// Course 2301180 requires 2301170 OR 2301173
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301180", mock.Anything, mock.Anything).Return(&model.Course{
 		Code: "2301180",
 		PrerequisiteGroups: []model.PrerequisiteGroup{
 			{
@@ -47,7 +47,7 @@ func setupCourseMocks(mockCourse *MockCourseRepository) {
 	}, nil)
 
 	// Course 2301230 requires 2301220
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301230", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301230", mock.Anything, mock.Anything).Return(&model.Course{
 		Code: "2301230",
 		PrerequisiteGroups: []model.PrerequisiteGroup{
 			{
@@ -61,7 +61,7 @@ func setupCourseMocks(mockCourse *MockCourseRepository) {
 	}, nil)
 
 	// Course 2301172 requires 2301170 as corequisite
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301172", mock.Anything, mock.Anything).Return(&model.Course{
 		Code:               "2301172",
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 		CorequisiteGroups: []model.PrerequisiteGroup{
@@ -75,14 +75,14 @@ func setupCourseMocks(mockCourse *MockCourseRepository) {
 	}, nil)
 
 	// Transitive prerequisite chain: 2301260 -> nothing
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301260", mock.Anything, mock.Anything).Return(&model.Course{
 		Code:               "2301260",
 		PrerequisiteGroups: []model.PrerequisiteGroup{},
 		CorequisiteGroups:  []model.PrerequisiteGroup{},
 	}, nil)
 
 	// 2301263 -> 2301260
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301263", mock.Anything, mock.Anything).Return(&model.Course{
 		Code: "2301263",
 		PrerequisiteGroups: []model.PrerequisiteGroup{
 			{
@@ -96,7 +96,7 @@ func setupCourseMocks(mockCourse *MockCourseRepository) {
 	}, nil)
 
 	// 2301365 -> 2301263 (which creates the transitive chain)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301365", mock.Anything, 2023).Return(&model.Course{
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "2301365", mock.Anything, mock.Anything).Return(&model.Course{
 		Code: "2301365",
 		PrerequisiteGroups: []model.PrerequisiteGroup{
 			{
@@ -308,7 +308,7 @@ func TestValidateCreditLimits_Simple_SummerSemester(t *testing.T) {
 func TestValidatePrerequisites_Simple_CourseNotFound(t *testing.T) {
 	graduationService, _, mockCourse, _ := setupGraduationService()
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "INVALID", mock.Anything, 2023).Return((*model.Course)(nil), errors.New("course not found"))
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "INVALID", mock.Anything, mock.Anything).Return((*model.Course)(nil), errors.New("course not found"))
 
 	progress := &model.StudentProgress{
 		CurriculumID:  uuid.New(),

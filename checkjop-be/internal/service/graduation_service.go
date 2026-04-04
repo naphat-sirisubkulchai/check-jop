@@ -414,7 +414,7 @@ func (s *graduationService) validateTransitiveCorequisites(courseCode string, co
 			for _, link := range group.PrerequisiteCourses {
 				coreqCode := link.PrerequisiteCourse.Code
 				if completed, exists := completedMap[coreqCode]; exists {
-					if s.isSameTerm(completed, currentCourse) || s.isCourseTakenBefore(completed, currentCourse) {
+					if s.isSameTerm(completed, currentCourse) {
 						groupSatisfied = true
 						// If this corequisite is satisfied, also check its transitive corequisites
 						transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, curriculumID, admissionYear)
@@ -452,7 +452,7 @@ func (s *graduationService) validateTransitiveCorequisites(courseCode string, co
 					transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, curriculumID, admissionYear)
 					allMissing = append(allMissing, transitMissing...)
 					allWrongTerm = append(allWrongTerm, transitWrongTerm...)
-				} else if !s.isSameTerm(completed, currentCourse) && !s.isCourseTakenBefore(completed, currentCourse) {
+				} else if !s.isSameTerm(completed, currentCourse) {
 					allWrongTerm = append(allWrongTerm, coreqCode)
 				} else {
 					// If this corequisite is satisfied, also check its transitive corequisites

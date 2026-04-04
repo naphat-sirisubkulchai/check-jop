@@ -34,10 +34,13 @@ func TestCalculateGPAX_AllGraded(t *testing.T) {
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return([]model.Category{}, nil)
 
+	mockCourse.On("CatalogYearExists", mock.Anything, mock.Anything).Return(true)
+	mockCourse.On("CourseHasCFOptionInAnyCatalogYear", mock.Anything, mock.Anything).Return(false)
+
 	// Mock GetByCodeAndYear for courses to avoid panic in ValidatePrerequisites
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "A", mock.Anything, 2023).Return(&model.Course{Code: "A"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "B", mock.Anything, 2023).Return(&model.Course{Code: "B"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "C", mock.Anything, 2023).Return(&model.Course{Code: "C"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "A", mock.Anything, mock.Anything).Return(&model.Course{Code: "A"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "B", mock.Anything, mock.Anything).Return(&model.Course{Code: "B"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "C", mock.Anything, mock.Anything).Return(&model.Course{Code: "C"}, nil)
 
 	progress := &model.StudentProgress{
 		CurriculumID:  curriculumID,
@@ -67,11 +70,13 @@ func TestCalculateGPAX_WithNonGraded(t *testing.T) {
 	curriculum := &model.Curriculum{ID: curriculumID}
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return([]model.Category{}, nil)
+	mockCourse.On("CatalogYearExists", mock.Anything, mock.Anything).Return(true)
+	mockCourse.On("CourseHasCFOptionInAnyCatalogYear", mock.Anything, mock.Anything).Return(false)
 
 	// Mock GetByCodeAndYear for courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "A", mock.Anything, 2023).Return(&model.Course{Code: "A"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "B", mock.Anything, 2023).Return(&model.Course{Code: "B"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "C", mock.Anything, 2023).Return(&model.Course{Code: "C"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "A", mock.Anything, mock.Anything).Return(&model.Course{Code: "A"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "B", mock.Anything, mock.Anything).Return(&model.Course{Code: "B"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "C", mock.Anything, mock.Anything).Return(&model.Course{Code: "C"}, nil)
 
 	progress := &model.StudentProgress{
 		CurriculumID:  curriculumID,
@@ -101,10 +106,12 @@ func TestCalculateGPAX_WithF(t *testing.T) {
 	curriculum := &model.Curriculum{ID: curriculumID}
 	mockCurriculum.On("GetByID", curriculumID).Return(curriculum, nil)
 	mockCategory.On("GetByCurriculumID", curriculumID).Return([]model.Category{}, nil)
+	mockCourse.On("CatalogYearExists", mock.Anything, mock.Anything).Return(true)
+	mockCourse.On("CourseHasCFOptionInAnyCatalogYear", mock.Anything, mock.Anything).Return(false)
 
 	// Mock GetByCodeAndYear for courses
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "A", mock.Anything, 2023).Return(&model.Course{Code: "A"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "B", mock.Anything, 2023).Return(&model.Course{Code: "B"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "A", mock.Anything, mock.Anything).Return(&model.Course{Code: "A"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "B", mock.Anything, mock.Anything).Return(&model.Course{Code: "B"}, nil)
 
 	progress := &model.StudentProgress{
 		CurriculumID:  curriculumID,
@@ -139,8 +146,8 @@ func TestValidatePrerequisites_FGrade_Violation(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "PRE", mock.Anything, 2023).Return(&model.Course{Code: "PRE"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "MAIN", mock.Anything, 2023).Return(courseMain, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "PRE", mock.Anything, mock.Anything).Return(&model.Course{Code: "PRE"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "MAIN", mock.Anything, mock.Anything).Return(courseMain, nil)
 
 	// Taking MAIN with PRE having grade F
 	progress := &model.StudentProgress{
@@ -176,8 +183,8 @@ func TestValidatePrerequisites_Corequisite_FGrade_Allowed(t *testing.T) {
 		},
 	}
 
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "CO", mock.Anything, 2023).Return(&model.Course{Code: "CO"}, nil)
-	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "MAIN", mock.Anything, 2023).Return(courseMain, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "CO", mock.Anything, mock.Anything).Return(&model.Course{Code: "CO"}, nil)
+	mockCourse.On("GetByCodeAndCurriculumIDAndYear", "MAIN", mock.Anything, mock.Anything).Return(courseMain, nil)
 
 	// Taking MAIN with CO having grade F (should be allowed for corequisite)
 	progress := &model.StudentProgress{
