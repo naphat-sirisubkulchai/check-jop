@@ -76,6 +76,12 @@ export function ResultSection({
           <CategoryResultsCard categoryResults={result.category_results} />
         </div>
 
+        {/* Print-only: Violations side by side below overview cards */}
+        <div className="hidden print:grid print:grid-cols-2 print:gap-4">
+          <PrerequisiteViolationsCard violations={result.prerequisite_violations} />
+          <CreditLimitViolationsCard violations={result.credit_limit_violations} />
+        </div>
+
         {/* Two Column Layout: Study Plan Record & Analysis Results */}
         <div className="result-two-col grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Column - Study Plan Record */}
@@ -91,14 +97,18 @@ export function ResultSection({
             </div>
 
             {/* Pre and Co requisite Violations */}
-            <PrerequisiteViolationsCard
-              violations={result.prerequisite_violations}
-            />
+            <div className="print:hidden">
+              <PrerequisiteViolationsCard
+                violations={result.prerequisite_violations}
+              />
+            </div>
 
             {/* Credit Limit Violations */}
-            <CreditLimitViolationsCard
-              violations={result.credit_limit_violations}
-            />
+            <div className="print:hidden">
+              <CreditLimitViolationsCard
+                violations={result.credit_limit_violations}
+              />
+            </div>
           </div>
         </div>
       </div>

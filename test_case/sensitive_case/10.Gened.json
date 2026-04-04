@@ -9,7 +9,7 @@
       "yearOfStudy": 1,
       "semester": 1,
       "credits": 3,
-      "category_name": "วิชาศึกษาทั่วไป-วิทย์",
+      "category_name": "วิชาศึกษาทั่วไป",
       "grade": "A"
     },
     {
@@ -19,7 +19,7 @@
       "yearOfStudy": 1,
       "semester": 1,
       "credits": 3,
-      "category_name": "วิชาศึกษาทั่วไป-มนุษย์",
+      "category_name": "วิชาศึกษาทั่วไป",
       "grade": "A"
     }
   ],

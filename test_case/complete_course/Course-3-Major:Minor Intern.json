@@ -145,7 +145,7 @@
       "yearOfStudy": 2,
       "semester": 1,
       "credits": 3,
-      "category_name": "วิชาศึกษาทั่วไป-มนุษย์",
+      "category_name": "วิชาศึกษาทั่วไป",
       "grade": "A"
     },
     {
@@ -293,7 +293,7 @@
       "yearOfStudy": 3,
       "semester": 2,
       "credits": 3,
-      "category_name": "วิชาศึกษาทั่วไป-สังคม",
+      "category_name": "วิชาศึกษาทั่วไป",
       "grade": "B+"
     },
     {
@@ -327,7 +327,7 @@
       "yearOfStudy": 4,
       "semester": 1,
       "credits": 3,
-      "category_name": "วิชาศึกษาทั่วไป-วิทย์",
+      "category_name": "วิชาศึกษาทั่วไป",
       "grade": "A"
     },
     {
@@ -361,7 +361,7 @@
       "yearOfStudy": 4,
       "semester": 2,
       "credits": 3,
-      "category_name": "วิชาศึกษาทั่วไป-สหศาสตร์"
+      "category_name": "วิชาศึกษาทั่วไป"
     },
     {
       "course_code": "GEN ED V (3)",
