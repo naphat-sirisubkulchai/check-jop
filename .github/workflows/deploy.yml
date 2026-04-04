@@ -11,9 +11,27 @@ env:
   IMAGE_BE: ghcr.io/${{ github.repository }}/backend
 
 jobs:
+  test-backend:
+    name: Run Backend Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./checkjop-be/go.mod
+          cache-dependency-path: ./checkjop-be/go.sum
+
+      - name: Run unit tests
+        working-directory: ./checkjop-be
+        run: go test ./tests/...
+
   build-and-push:
     name: Build & Push Images
     runs-on: ubuntu-latest
+    needs: test-backend
     permissions:
       contents: read
       packages: write
