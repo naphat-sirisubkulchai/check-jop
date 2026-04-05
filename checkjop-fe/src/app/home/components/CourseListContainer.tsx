@@ -90,7 +90,7 @@ export default function CourseListContainer() {
 
   return (
     <div
-      className={`flex-shrink-0 flex flex-col p-4 shadow-sm z-10 transition-all duration-300 ${isCollapsed ? "w-16 hidden md:flex" : "w-full md:w-90"}`}
+      className={`flex-shrink-0 hidden lg:flex flex-col p-4 shadow-sm z-10 transition-all duration-300 ${isCollapsed ? "lg:w-16" : "lg:w-90"}`}
     >
       {/* Search and Course List */}
       <div className="flex flex-col flex-1 overflow-hidden">

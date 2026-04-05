@@ -193,17 +193,17 @@ export default function CourseCard({
         )}
 
         {/* Drag Handle */}
-        <div className="flex shrink-0 items-center">
+        <div className="hidden lg:flex shrink-0 items-center">
           <GripVertical className="h-4 w-4 text-gray-300 transition-colors group-hover:text-chula-active" />
         </div>
 
         {/* Content */}
         <div className="min-w-0 flex-1">
           {/* Course Code & Name */}
-          <div className="flex items-baseline gap-1.5">
+          <div className="flex flex-col lg:flex-row lg:items-baseline lg:gap-1.5">
             <span className="text-sm font-bold text-gray-900 shrink-0">{courseCode}</span>
             {courseName !== courseCode && (
-              <span className="min-w-0 truncate text-sm text-gray-700">{courseName}</span>
+              <span className="min-w-0 truncate text-xs text-gray-700">{courseName}</span>
             )}
           </div>
 
@@ -232,8 +232,8 @@ export default function CourseCard({
           </div>
         </div>
 
-        {/* Action Buttons - Visible on Hover (desktop) or always visible (mobile) */}
-        <div className="flex shrink-0 items-center gap-1 opacity-100 md:opacity-0 md:transition-opacity md:group-hover:opacity-100">
+        {/* Action Buttons - Visible on Hover (desktop) or always visible (mobile/tablet) */}
+        <div className="flex shrink-0 items-center gap-1 opacity-100 lg:opacity-0 lg:transition-opacity lg:group-hover:opacity-100">
           {/* Edit Manual Course */}
           {isManualCourse && (
             <Button
