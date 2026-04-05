@@ -16,12 +16,12 @@ export default function Header() {
           <img
             src="/CheckJop_logo_mobile.png"
             alt="Check Jop Logo"
-            className="h-10 sm:hidden cursor-pointer hover:opacity-90 transition-opacity"
+            className="h-10 md:hidden cursor-pointer hover:opacity-90 transition-opacity"
           />
           <img
             src="/CheckJop_logo4.png"
             alt="Check Jop Logo"
-            className="h-12 hidden sm:block cursor-pointer hover:opacity-90 transition-opacity"
+            className="h-12 hidden md:block cursor-pointer hover:opacity-90 transition-opacity"
           />
         </Link>
       </div>

@@ -40,7 +40,7 @@ export default function CourseLibraryCard({ course, isInPlan, isElective }: Cour
     >
       <div className="flex items-center gap-1 px-1">
         {!isInPlan && (
-          <GripVertical className="hidden md:block h-5 w-5 text-gray-300 flex-shrink-0 -ml-1" />
+          <GripVertical className="hidden 2xl:block h-5 w-5 text-gray-300 flex-shrink-0 -ml-1" />
         )}
 
         <div className="flex-1">
