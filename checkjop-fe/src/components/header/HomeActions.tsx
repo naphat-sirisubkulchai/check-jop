@@ -86,22 +86,22 @@ export default function HomeActions() {
           <TooltipTrigger asChild>
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white shadow-sm text-xs text-gray-600 cursor-default select-none">
               <span className="inline-block w-2.5 h-2.5 rounded-sm border-l-2 border-sci-normal bg-sci-soft/40" />
-              <span>วิชาเลือก</span>
+              <span>Elective</span>
               <span className="mx-1 text-gray-300">|</span>
               <span className="inline-block w-2.5 h-2.5 rounded-sm border-l-2 border-chula-active bg-chula-soft/40" />
-              <span>วิชาอื่น</span>
+              <span>Others</span>
             </div>
           </TooltipTrigger>
           <TooltipContent side="left" className="max-w-52 text-xs">
-            <p className="font-semibold mb-1">ความหมายของสี</p>
+            <p className="font-semibold mb-1">Color Legend</p>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="inline-block w-3 h-3 rounded-sm border-l-2 border-sci-normal bg-sci-soft/40 flex-shrink-0" />
-                <span>วิชาเลือก / วิชาบังคับเลือก</span>
+                <span>Elective / Required Elective</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="inline-block w-3 h-3 rounded-sm border-l-2 border-chula-active bg-chula-soft/40 flex-shrink-0" />
-                <span>วิชาทั่วไป / วิชาแกน / วิชาอื่นๆ</span>
+                <span>General Ed / Core / Others</span>
               </div>
             </div>
           </TooltipContent>

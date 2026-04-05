@@ -28,13 +28,13 @@ export function MissingCatalogYearsCard({
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-red-800 font-bold text-base">
-            ข้อมูลรายวิชาไม่ครบถ้วน
+            Incomplete Course Data
           </h3>
           <p className="text-red-700 text-sm mt-1">
-            คุณมีรายวิชาที่เรียนในปีการศึกษา{" "}
+            You have courses taken in academic year{" "}
             <span className="font-semibold">{sorted.join(", ")}</span>{" "}
-            ซึ่งยังไม่มีข้อมูลหลักสูตรในระบบ ผลการตรวจสอบ pre/co req
-            ของแต่ละปีจะอิงจากหลักสูตรปีก่อนหน้าที่ใกล้ที่สุดที่มีข้อมูลแทน
+            which has no curriculum data in the system. Pre/co req checks for
+            those years will use the nearest earlier available catalog year instead.
           </p>
           <div className="flex flex-wrap gap-2 mt-3">
             {sorted.map((year) => {
@@ -46,10 +46,10 @@ export function MissingCatalogYearsCard({
                   className="inline-flex items-center gap-1 bg-red-100 border border-red-300 text-red-800 text-xs font-semibold px-3 py-1 rounded-full"
                 >
                   <AlertTriangle className="w-3 h-3" />
-                  ปี {year} ยังไม่มีข้อมูล
+                  Year {year} not available
                   {usesFallback && (
                     <span className="font-normal text-red-700">
-                      {" "}→ ใช้ปี {fallback} แทน
+                      {" "}→ using {fallback} instead
                     </span>
                   )}
                 </span>
@@ -80,13 +80,13 @@ export function MissingCatalogYearsCard({
               <div className="w-11 h-11 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <AlertTriangle className="w-6 h-6 text-white" strokeWidth={2.5} />
               </div>
-              <h2 className="text-red-800 font-bold text-lg">ข้อมูลรายวิชาไม่ครบถ้วน</h2>
+              <h2 className="text-red-800 font-bold text-lg">Incomplete Course Data</h2>
             </div>
             <p className="text-red-700 text-sm mb-4">
-              คุณมีรายวิชาที่เรียนในปีการศึกษา{" "}
+              You have courses taken in academic year{" "}
               <span className="font-semibold">{sorted.join(", ")}</span>{" "}
-              ซึ่งยังไม่มีข้อมูลหลักสูตรในระบบ ผลการตรวจสอบ pre/co req
-              ของแต่ละปีจะอิงจากหลักสูตรปีก่อนหน้าที่ใกล้ที่สุดที่มีข้อมูลแทน
+              which has no curriculum data in the system. Pre/co req checks for
+              those years will use the nearest earlier available catalog year instead.
             </p>
             <div className="flex flex-wrap gap-2 mb-5">
               {sorted.map((year) => {
@@ -98,10 +98,10 @@ export function MissingCatalogYearsCard({
                     className="inline-flex items-center gap-1 bg-red-100 border border-red-300 text-red-800 text-xs font-semibold px-3 py-1 rounded-full"
                   >
                     <AlertTriangle className="w-3 h-3" />
-                    ปี {year} ยังไม่มีข้อมูล
+                    Year {year} not available
                     {usesFallback && (
                       <span className="font-normal text-red-700">
-                        {" "}→ ใช้ปี {fallback} แทน
+                        {" "}→ using {fallback} instead
                       </span>
                     )}
                   </span>
@@ -112,7 +112,7 @@ export function MissingCatalogYearsCard({
               onClick={() => setDismissed(true)}
               className="w-full bg-red-500 hover:bg-red-600 text-white"
             >
-              รับทราบ
+              Acknowledge
             </Button>
           </div>
         </div>
