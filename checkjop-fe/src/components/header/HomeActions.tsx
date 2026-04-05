@@ -130,11 +130,11 @@ export default function HomeActions() {
       </Select>
 
       <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="bg-white shadow-sm">
-        <Upload className="h-4 w-4 mr-2" />
+        <Download className="h-4 w-4 mr-2" />
         Import
       </Button>
       <Button onClick={handleExport} variant="outline" className="bg-white shadow-sm">
-        <Download className="h-4 w-4 mr-2" />
+        <Upload className="h-4 w-4 mr-2" />
         Export
       </Button>
       <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
