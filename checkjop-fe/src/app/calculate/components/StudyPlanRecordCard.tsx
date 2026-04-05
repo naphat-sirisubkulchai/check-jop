@@ -11,7 +11,7 @@ interface StudyPlanRecordCardProps {
 }
 
 export function StudyPlanRecordCard({ studyPlan }: StudyPlanRecordCardProps) {
-  const { getCourseByCode, categories } = useAppStore();
+  const { getCourseByCode, categories, exemptions } = useAppStore();
 
   // Build set of course codes in elective categories
   const electiveCodes = new Set<string>();
@@ -121,6 +121,7 @@ export function StudyPlanRecordCard({ studyPlan }: StudyPlanRecordCardProps) {
                           // const courseCategory = course?.category_name || null;
 
                           const isElective = electiveCodes.has(plan.course_code);
+                          const isCF = exemptions.includes(plan.course_code);
                           return (
                             <div
                               key={`${plan.course_code}-${idx}`}
@@ -148,6 +149,14 @@ export function StudyPlanRecordCard({ studyPlan }: StudyPlanRecordCardProps) {
                                       className="bg-green-100 text-green-700 text-xs px-1.5 py-0.5"
                                     >
                                       {plan.grade}
+                                    </Badge>
+                                  )}
+                                  {isCF && (
+                                    <Badge
+                                      variant="secondary"
+                                      className="bg-purple-100 text-purple-700 text-xs px-1.5 py-0.5"
+                                    >
+                                      C.F.
                                     </Badge>
                                   )}
                                 </div>
