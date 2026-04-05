@@ -105,6 +105,15 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 	results := []model.CategoryCheckResult{}
 	completedCourseMap := s.buildCompletedCourseMap(progress.Courses)
 
+	// Track courses that have been explicitly assigned to a category via category_name
+	// These should not be double-counted in other categories
+	manuallyAssignedCourses := make(map[string]bool)
+	for _, course := range progress.Courses {
+		if course.CategoryName != "" {
+			manuallyAssignedCourses[course.CourseCode] = true
+		}
+	}
+
 	for _, category := range categories {
 		earnedCredits := 0
 
@@ -126,6 +135,10 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 					continue
 				}
 				if completedCourse, completed := completedCourseMap[course.Code]; completed {
+					// Skip courses that were manually assigned to a different category
+					if manuallyAssignedCourses[course.Code] {
+						continue
+					}
 					if !countedCourses[course.Code] {
 						earnedCredits += completedCourse.Credits
 						countedCourses[course.Code] = true
