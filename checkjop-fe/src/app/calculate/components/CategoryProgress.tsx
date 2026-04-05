@@ -39,25 +39,25 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
   return (
     <div className="hover:bg-gray-50 transition-colors">
       <div
-        className={cn("flex items-center justify-between p-5", hasMissingCourses && "cursor-pointer")}
+        className={cn("flex items-center justify-between p-4", hasMissingCourses && "cursor-pointer")}
         onClick={() => hasMissingCourses && setExpanded(!expanded)}
         role="region"
         aria-label={`${category.category_name}: ${category.earned_credits} of ${category.required_credits} credits completed`}
       >
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <h4 className="text-base font-bold text-gray-900 truncate">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h4 className="text-sm font-bold text-gray-900 truncate">
               {category.category_name}
             </h4>
             {hasMissingCourses && (
-              expanded ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />
+              expanded ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" /> : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
             )}
           </div>
-          <div className="flex items-center gap-4">
-            <span className="w-28 flex-shrink-0 text-sm font-semibold text-gray-700">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-700 shrink-0">
               {category.earned_credits} / {category.required_credits} credits
             </span>
-            <div className="relative h-3 w-full max-w-xl flex-1 overflow-hidden rounded-full bg-gray-200 shadow-inner">
+            <div className="relative h-2 w-full flex-1 overflow-hidden rounded-full bg-gray-200 shadow-inner hidden sm:block">
               <div
                 className={cn("h-full transition-all duration-500 shadow-sm", getProgressColor())}
                 style={{ width: `${Math.min(progressPercentage, 100)}%` }}
@@ -68,22 +68,22 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
                 aria-label={`Progress: ${Math.round(progressPercentage)}%`}
               />
             </div>
-            <span className="text-xs font-semibold text-gray-500 w-12 text-right">
+            <span className="text-xs font-semibold text-gray-500 shrink-0">
               {Math.round(progressPercentage)}%
             </span>
           </div>
         </div>
-        <div className="ml-6 flex-shrink-0">
+        <div className="ml-3 flex-shrink-0">
           {category.is_satisfied ? (
-            <Badge className={cn("font-bold text-xs min-w-24 py-2 rounded-lg shadow-sm", getBadgeStyle())} role="status">
+            <Badge className={cn("font-bold text-xs px-2 py-1 rounded-lg shadow-sm whitespace-nowrap", getBadgeStyle())} role="status">
               ✓ Completed
             </Badge>
           ) : category.earned_credits === 0 ? (
-            <Badge className={cn("font-bold text-xs min-w-24 py-2 rounded-lg shadow-sm", getBadgeStyle())} role="status">
+            <Badge className={cn("font-bold text-xs px-2 py-1 rounded-lg shadow-sm whitespace-nowrap", getBadgeStyle())} role="status">
               {category.required_credits} Missing
             </Badge>
           ) : (
-            <Badge className={cn("font-bold text-xs min-w-24 py-2 rounded-lg shadow-sm", getBadgeStyle())} role="status">
+            <Badge className={cn("font-bold text-xs px-2 py-1 rounded-lg shadow-sm whitespace-nowrap", getBadgeStyle())} role="status">
               {missingCredits} Missing
             </Badge>
           )}

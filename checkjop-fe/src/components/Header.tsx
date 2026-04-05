@@ -14,9 +14,14 @@ export default function Header() {
       <div className="flex items-center gap-1 flex-shrink-0 px-2">
         <Link href="/" className="flex-shrink-0">
           <img
+            src="/CheckJop_logo_mobile.png"
+            alt="Check Jop Logo"
+            className="h-10 sm:hidden cursor-pointer hover:opacity-90 transition-opacity"
+          />
+          <img
             src="/CheckJop_logo4.png"
             alt="Check Jop Logo"
-            className="h-12 cursor-pointer hover:opacity-90 transition-opacity"
+            className="h-12 hidden sm:block cursor-pointer hover:opacity-90 transition-opacity"
           />
         </Link>
       </div>

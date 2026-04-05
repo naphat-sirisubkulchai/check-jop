@@ -60,19 +60,19 @@ export default function StudyPlanContainer() {
   }
 
   return (
-    <div className="flex flex-col flex-1 h-full px-4 pt-4">
+    <div className="flex flex-col flex-1 md:h-full px-4 pt-4">
       {/* Top section */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-1">
         {/* Academic Plan & Record Header */}
-        <div className="flex items-baseline">
-          <h3 className="text-xl font-bold">Academic Plan & Record</h3>
-          <p className="ml-4 text-gray-600">{selectedCurriculum?.nameTH}</p>
+        <div className="flex flex-col sm:flex-row sm:items-baseline">
+          <h3 className="text-lg sm:text-xl font-bold">Academic Plan & Record</h3>
+          <p className="sm:ml-4 text-sm text-gray-600 truncate">{selectedCurriculum?.nameTH}</p>
         </div>
 
         {/* Summary Course Credits */}
-        <div className="ml-4">
-          <p className="text-lg text-gray-600 truncate">
-            Total : <span className="text-chula-active font-semibold text-2xl">{totalCredits}</span> /{" "}
+        <div className="sm:ml-4 shrink-0">
+          <p className="text-base sm:text-lg text-gray-600">
+            Total : <span className="text-chula-active font-semibold text-xl sm:text-2xl">{totalCredits}</span> /{" "}
             {selectedCurriculum?.minTotalCredits} credits
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function StudyPlanContainer() {
       {/* <ExemptionsSection /> */}
 
       {/* Plan area - Scrollable all years view */}
-      <section className="flex-1 overflow-y-auto space-y-6 overflow-x-hidden">
+      <section className="md:flex-1 md:overflow-y-auto space-y-6 overflow-x-hidden">
         {/* Years Section */}
         {years.map((year) => {
           const academicYear = yearMapping?.[year] || 2566 + year - 1;
@@ -122,7 +122,7 @@ export default function StudyPlanContainer() {
                         sem={1}
                         yearOfStudy={year}
                         academicYear={academicYear}
-                        className="flex-1 min-h-[300px]"
+                        className="flex-1 min-h-[180px] md:min-h-[300px]"
                       />
                     </div>
 
@@ -132,7 +132,7 @@ export default function StudyPlanContainer() {
                         sem={2}
                         yearOfStudy={year}
                         academicYear={academicYear}
-                        className="flex-1 min-h-[300px]"
+                        className="flex-1 min-h-[180px] md:min-h-[300px]"
                       />
                     </div>
 
@@ -142,7 +142,7 @@ export default function StudyPlanContainer() {
                         sem={3}
                         yearOfStudy={year}
                         academicYear={academicYear}
-                        className="flex-1 min-h-[300px]"
+                        className="flex-1 min-h-[180px] md:min-h-[300px]"
                       />
                     </div>
                   </div>
@@ -154,17 +154,15 @@ export default function StudyPlanContainer() {
       </section>
 
       {/* Action Buttons */}
-      <div className="p-4 flex justify-end gap-3">
-        <div className="flex gap-2">
-          <Button onClick={handleClearStudyPlan} variant={"outline"} size="default" className="bg-white shadow-sm px-8 py-5">
-            <Trash2 className="h-5 w-5 mr-2" />
-            Clear Table
-          </Button>
-        </div>
+      <div className="sticky bottom-0 bg-white/80 backdrop-blur-sm border-t border-gray-100 p-4 flex justify-end gap-3 md:static md:bg-transparent md:backdrop-blur-none md:border-0">
+        <Button onClick={handleClearStudyPlan} variant={"outline"} size="default" className="bg-white shadow-sm px-4 sm:px-8 py-5">
+          <Trash2 className="h-5 w-5 sm:mr-2" />
+          <span className="hidden sm:inline">Clear Table</span>
+        </Button>
         <Button
           disabled={!selectedCurriculum}
           onClick={handleSubmit}
-          className="bg-gradient-to-r from-chula-active to-pink-500 hover:from-chula-active/90 hover:to-pink-600 text-white px-8 py-5 shadow-md hover:shadow-lg font-semibold text-base"
+          className="bg-gradient-to-r from-chula-active to-pink-500 hover:from-chula-active/90 hover:to-pink-600 text-white px-4 sm:px-8 py-5 shadow-md hover:shadow-lg font-semibold text-sm sm:text-base"
           size="default"
         >
           Calculate Eligibility

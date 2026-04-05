@@ -57,7 +57,7 @@ export default function CalculatePage() {
     <div className="flex flex-col h-full overflow-hidden print:block print:h-auto print:overflow-visible">
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto print:block print:overflow-visible">
-        <div className="mx-8 my-6 print:mx-4 print:my-2">
+        <div className="mx-4 my-4 md:mx-8 md:my-6 print:mx-4 print:my-2">
           <ResultSection result={result} />
         </div>
       </main>

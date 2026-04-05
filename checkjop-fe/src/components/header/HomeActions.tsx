@@ -84,7 +84,7 @@ export default function HomeActions() {
       <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white shadow-sm text-xs text-gray-600 cursor-default select-none">
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white shadow-sm text-xs text-gray-600 cursor-default select-none">
               <span className="inline-block w-2.5 h-2.5 rounded-sm border-l-2 border-sci-normal bg-sci-soft/40" />
               <span>วิชาเลือก</span>
               <span className="mx-1 text-gray-300">|</span>
@@ -109,16 +109,16 @@ export default function HomeActions() {
       </TooltipProvider>
 
       <Button onClick={() => setSettingsOpen(true)} variant="outline" className="bg-white shadow-sm">
-        <Settings className="h-4 w-4 mr-2" />
-        Settings
+        <Settings className="h-4 w-4 sm:mr-2" />
+        <span className="hidden sm:inline">Settings</span>
       </Button>
 
       <Select
         value=""
         onValueChange={(file) => { handleLoadSample(file); }}
       >
-        <SelectTrigger className="bg-white shadow-sm border-input w-36">
-          <SelectValue placeholder="Load Sample" />
+        <SelectTrigger className="bg-white shadow-sm border-input w-28 sm:w-36">
+          <SelectValue placeholder="Sample" />
         </SelectTrigger>
         <SelectContent>
           {SAMPLES.map((s) => (
@@ -130,12 +130,12 @@ export default function HomeActions() {
       </Select>
 
       <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="bg-white shadow-sm">
-        <Download className="h-4 w-4 mr-2" />
-        Import
+        <Download className="h-4 w-4 sm:mr-2" />
+        <span className="hidden sm:inline">Import</span>
       </Button>
       <Button onClick={handleExport} variant="outline" className="bg-white shadow-sm">
-        <Upload className="h-4 w-4 mr-2" />
-        Export
+        <Upload className="h-4 w-4 sm:mr-2" />
+        <span className="hidden sm:inline">Export</span>
       </Button>
       <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
 

@@ -26,9 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full overflow-x-hidden">
       <body
-        className={`${baiJamjuree.variable} antialiased h-full flex flex-col bg-gradient-to-br from-chula-soft via-pink-50 to-white`}
+        className={`${baiJamjuree.variable} antialiased h-full flex flex-col bg-gradient-to-br from-chula-soft via-pink-50 to-white overflow-x-hidden`}
       >
         <StudyPlanInitializer />
         <Header />

@@ -232,8 +232,8 @@ export default function CourseCard({
           </div>
         </div>
 
-        {/* Action Buttons - Visible on Hover */}
-        <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        {/* Action Buttons - Visible on Hover (desktop) or always visible (mobile) */}
+        <div className="flex shrink-0 items-center gap-1 opacity-100 md:opacity-0 md:transition-opacity md:group-hover:opacity-100">
           {/* Edit Manual Course */}
           {isManualCourse && (
             <Button
