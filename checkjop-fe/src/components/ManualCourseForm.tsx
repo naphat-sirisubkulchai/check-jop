@@ -16,6 +16,8 @@ import { Plan } from "@/types";
 import { useAppStore } from "@/store/appStore";
 import { toast } from "sonner";
 import { GRADE_OPTIONS } from "@/lib/constants";
+const ALLOWED_CATEGORIES = ["วิชาศึกษาทั่วไป", "วิชาเสรี", "วิชาศึกษาทั่วไปกลุ่มพิเศษ", "กลุ่มวิชาโท"];
+
 interface ManualCourseFormProps {
   onClose?: () => void;
   semester: number;
@@ -146,14 +148,18 @@ export default function ManualCourseForm({
     [],
   );
 
+  const ALLOWED_CATEGORIES = ["วิชาศึกษาทั่วไป", "วิชาเสรี", "วิชาศึกษาทั่วไปกลุ่มพิเศษ", "กลุ่มวิชาโท"];
+
   // Memoize category options to prevent re-rendering
   const categoryOptions = useMemo(
     () =>
-      categories.map((category) => (
-        <SelectItem key={category.id} value={category.name_th}>
-          {category.name_th}
-        </SelectItem>
-      )),
+      categories
+        .filter((category) => ALLOWED_CATEGORIES.includes(category.name_th))
+        .map((category) => (
+          <SelectItem key={category.id} value={category.name_th}>
+            {category.name_th}
+          </SelectItem>
+        )),
     [categories],
   );
 
