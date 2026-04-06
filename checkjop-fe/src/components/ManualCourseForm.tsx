@@ -16,7 +16,7 @@ import { Plan } from "@/types";
 import { useAppStore } from "@/store/appStore";
 import { toast } from "sonner";
 import { GRADE_OPTIONS } from "@/lib/constants";
-const ALLOWED_CATEGORIES = ["วิชาศึกษาทั่วไป", "วิชาเสรี", "วิชาศึกษาทั่วไปกลุ่มพิเศษ", "กลุ่มวิชาโท"];
+const ALLOWED_CATEGORIES = ["วิชาศึกษาทั่วไป", "วิชาเสรี", "วิชาศึกษาทั่วไปกลุ่มพิเศษ", "กลุ่มวิชาโท", "วิชาเลือก"];
 
 interface ManualCourseFormProps {
   onClose?: () => void;

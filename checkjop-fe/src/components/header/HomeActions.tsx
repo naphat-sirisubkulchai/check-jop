@@ -129,14 +129,32 @@ export default function HomeActions() {
         </SelectContent>
       </Select>
 
-      <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="hidden xl:flex bg-white shadow-sm">
-        <Download className="h-4 w-4 xl:mr-2" />
-        <span className="hidden xl:inline">Import</span>
-      </Button>
-      <Button onClick={handleExport} variant="outline" className="hidden xl:flex bg-white shadow-sm">
-        <Upload className="h-4 w-4 xl:mr-2" />
-        <span className="hidden xl:inline">Export</span>
-      </Button>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button onClick={() => fileInputRef.current?.click()} variant="outline" className="hidden xl:flex bg-white shadow-sm">
+              <Download className="h-4 w-4 xl:mr-2" />
+              <span className="hidden xl:inline">Import</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-xs">
+            Import study plan from a CheckJop JSON file
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button onClick={handleExport} variant="outline" className="hidden xl:flex bg-white shadow-sm">
+              <Upload className="h-4 w-4 xl:mr-2" />
+              <span className="hidden xl:inline">Export</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="text-xs">
+            Export study plan as a CheckJop JSON file
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
 
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />

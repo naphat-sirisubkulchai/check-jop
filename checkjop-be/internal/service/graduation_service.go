@@ -127,26 +127,24 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 		// Check database courses for this category
 		missingCourses := []string{}
 		isElective := strings.Contains(category.NameTH, "วิชาเลือก") || strings.Contains(category.NameEN, "Elective")
-		if earnedCredits == 0 {
-			countedCourses := make(map[string]bool)
-			for _, course := range category.Courses {
-				// Only count courses matching the student's admission year
-				if course.Year != progress.AdmissionYear {
+		countedCourses := make(map[string]bool)
+		for _, course := range category.Courses {
+			// Only count courses matching the student's admission year
+			if course.Year != progress.AdmissionYear {
+				continue
+			}
+			if completedCourse, completed := completedCourseMap[course.Code]; completed {
+				// Skip courses that were manually assigned to a different category
+				if manuallyAssignedCourses[course.Code] {
 					continue
 				}
-				if completedCourse, completed := completedCourseMap[course.Code]; completed {
-					// Skip courses that were manually assigned to a different category
-					if manuallyAssignedCourses[course.Code] {
-						continue
-					}
-					if !countedCourses[course.Code] {
-						earnedCredits += completedCourse.Credits
-						countedCourses[course.Code] = true
-					}
-				} else if !isElective {
-					// Only report missing courses for non-elective categories
-					missingCourses = append(missingCourses, course.Code)
+				if !countedCourses[course.Code] {
+					earnedCredits += completedCourse.Credits
+					countedCourses[course.Code] = true
 				}
+			} else if !isElective {
+				// Only report missing courses for non-elective categories
+				missingCourses = append(missingCourses, course.Code)
 			}
 		}
 
