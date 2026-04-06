@@ -148,8 +148,6 @@ export default function ManualCourseForm({
     [],
   );
 
-  const ALLOWED_CATEGORIES = ["วิชาศึกษาทั่วไป", "วิชาเสรี", "วิชาศึกษาทั่วไปกลุ่มพิเศษ", "กลุ่มวิชาโท"];
-
   // Memoize category options to prevent re-rendering
   const categoryOptions = useMemo(
     () =>
