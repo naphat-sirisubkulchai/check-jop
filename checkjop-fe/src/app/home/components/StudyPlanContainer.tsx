@@ -60,7 +60,7 @@ export default function StudyPlanContainer() {
   }
 
   return (
-    <div className="flex flex-col flex-1 2xl:h-full px-4 pt-4">
+    <div className="flex flex-col flex-1 xl:h-full px-4 pt-4">
       {/* Top section */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-1">
         {/* Academic Plan & Record Header */}
@@ -82,7 +82,7 @@ export default function StudyPlanContainer() {
       {/* <ExemptionsSection /> */}
 
       {/* Plan area - Scrollable all years view */}
-      <section className="2xl:flex-1 2xl:overflow-y-auto space-y-6 overflow-x-hidden">
+      <section className="xl:flex-1 xl:overflow-y-auto space-y-6 overflow-x-hidden">
         {/* Years Section */}
         {years.map((year) => {
           const academicYear = yearMapping?.[year] || 2566 + year - 1;
@@ -114,7 +114,7 @@ export default function StudyPlanContainer() {
                 <div id={`year-${year}-content`}>
                   {/* Semester Grid - 2 or 3 columns based on summer term */}
                   <div
-                    className={`grid grid-cols-1 gap-4 2xl:grid-cols-3`}
+                    className={`grid grid-cols-1 gap-4 xl:grid-cols-3`}
                   >
                     {/* Semester 1 */}
                     <div className="flex flex-col">

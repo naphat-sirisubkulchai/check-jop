@@ -11,7 +11,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <main className="flex flex-col 2xl:flex-row flex-1 2xl:overflow-hidden overflow-y-auto overflow-x-hidden">
+      <main className="flex flex-col xl:flex-row flex-1 xl:overflow-hidden overflow-y-auto overflow-x-hidden">
         <CourseListContainer />
         <StudyPlanContainer />
       </main>
