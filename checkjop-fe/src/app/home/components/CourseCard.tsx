@@ -141,11 +141,17 @@ export default function CourseCard({
             description: result.message,
           });
         }
-      } catch (error) {
-        console.error("Error checking CF option:", error);
-        toast.error("Failed to check CF option", {
-          description: error instanceof Error ? error.message : "Unknown error occurred",
-        });
+      } catch (error: any) {
+        if (error?.response?.status === 404 || error?.status === 404) {
+          toast.error("CF Not Available", {
+            description: `${courseCode} does not have C.F. in the system`,
+          });
+        } else {
+          console.error("Error checking CF option:", error);
+          toast.error("Failed to check CF option", {
+            description: error instanceof Error ? error.message : "Unknown error occurred",
+          });
+        }
       } finally {
         setIsCFLoading(false);
       }
