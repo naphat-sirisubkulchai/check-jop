@@ -23,7 +23,7 @@ export default function SemesterCard({
   academicYear,
   className,
 }: SemesterCardProps) {
-  const { studyPlan, addCoursePlan, getCourseByCode, editCoursePlan } =
+  const { studyPlan, addCoursePlan, getCourseByCode, editCoursePlan, removeExemption, exemptions } =
     useAppStore();
   const [isManualFormOpen, setIsManualFormOpen] = useState(false);
 
@@ -94,6 +94,11 @@ export default function SemesterCard({
       semester: sem,
       academicYear: academicYear,
     });
+
+    // Clear CF exemption when course is moved to a different semester
+    if (exemptions.includes(courseCode)) {
+      removeExemption(courseCode);
+    }
 
     // toast.success("Course moved", {
     //   description: `${courseCode} moved to Year ${yearOfStudy}, Semester ${sem}`,
