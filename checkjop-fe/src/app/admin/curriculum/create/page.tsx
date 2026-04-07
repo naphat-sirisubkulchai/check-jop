@@ -3,7 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, Upload, Download, FileText, X } from "lucide-react";
+import { ArrowLeft, Upload, Download, FileText, X, AlertCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Papa from "papaparse";
 import { PreviewCard } from "./components/previewCard";
 import { courseApi } from "@/api/courseApi";
@@ -82,6 +88,7 @@ export default function CreateCurriculumPage() {
     previewData: null,
   });
   const [loading, setLoading] = useState(false);
+  const [errorDialog, setErrorDialog] = useState<{ open: boolean; lines: string[] }>({ open: false, lines: [] });
   const [isDragOver, setIsDragOver] = useState<
     "curriculum" | "category" | undefined
   >();
@@ -286,10 +293,14 @@ export default function CreateCurriculumPage() {
       });
       toast.success("Curriculum created successfully");
       router.push("/admin");
-    } catch (e: unknown) {
-      toast.error("Failed to create curriculum", {
-        description: e instanceof Error ? e.message : "Unknown error occurred",
-      });
+    } catch (e: any) {
+      const detail: string = e?.response?.data?.error || e?.message || "Unknown error occurred";
+      const lines = detail.split("\n- ").map((l: string, i: number) => i === 0 ? l : "- " + l).filter(Boolean);
+      if (lines.length > 1) {
+        setErrorDialog({ open: true, lines });
+      } else {
+        toast.error("Failed to create curriculum", { description: detail });
+      }
     } finally {
       setLoading(false);
     }
@@ -628,6 +639,27 @@ export default function CreateCurriculumPage() {
           </form>
         </div>
       </div>
+
+      <Dialog open={errorDialog.open} onOpenChange={(open) => setErrorDialog((prev) => ({ ...prev, open }))}>
+        <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-5 w-5" />
+              Failed to create curriculum
+            </DialogTitle>
+          </DialogHeader>
+          <div className="overflow-y-auto flex-1 mt-2">
+            <p className="text-sm text-gray-600 mb-3">{errorDialog.lines[0]}</p>
+            <div className="space-y-1">
+              {errorDialog.lines.slice(1).map((line, i) => (
+                <div key={i} className="text-sm text-red-700 bg-red-50 rounded px-3 py-1.5 font-mono">
+                  {line}
+                </div>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
