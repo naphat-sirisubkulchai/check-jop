@@ -207,7 +207,7 @@ func (s *graduationService) ValidatePrerequisites(progress *model.StudentProgres
 
 		// Validate transitive corequisites with proper OR/AND logic
 		coreqVisited := make(map[string]bool)
-		missingCoreqs, coreqsWrongTerm := s.validateTransitiveCorequisites(completedCourse.CourseCode, completedCourseMap, completedCourse, coreqVisited, progress.CurriculumID, prereqYear)
+		missingCoreqs, coreqsWrongTerm := s.validateTransitiveCorequisites(completedCourse.CourseCode, completedCourseMap, completedCourse, coreqVisited, progress.Exemptions, progress.CurriculumID, prereqYear)
 		wrongTermCourse := len(coreqsWrongTerm) > 0
 
 		if len(missingPrereqs) > 0 || len(prereqsWrongTerm) > 0 || len(missingCoreqs) > 0 || len(coreqsWrongTerm) > 0 || wrongTermCourse {
@@ -400,7 +400,7 @@ func (s *graduationService) validateTransitivePrerequisites(courseCode string, c
 }
 
 // validateTransitiveCorequisites checks all transitive corequisites for a course recursively
-func (s *graduationService) validateTransitiveCorequisites(courseCode string, completedMap map[string]model.CompletedCourse, currentCourse model.CompletedCourse, visited map[string]bool, curriculumID uuid.UUID, admissionYear int) ([]string, []string) {
+func (s *graduationService) validateTransitiveCorequisites(courseCode string, completedMap map[string]model.CompletedCourse, currentCourse model.CompletedCourse, visited map[string]bool, exemptions []string, curriculumID uuid.UUID, admissionYear int) ([]string, []string) {
 	if visited[courseCode] {
 		return []string{}, []string{} // Avoid infinite loops
 	}
@@ -418,6 +418,20 @@ func (s *graduationService) validateTransitiveCorequisites(courseCode string, co
 	for _, group := range course.CorequisiteGroups {
 		if group.IsOrGroup {
 			// OR logic: at least one course in the group must be satisfied
+			// If group has CF condition and current course is in exemptions, group is satisfied
+			cfSatisfied := false
+			if group.HasCFCondition {
+				for _, ex := range exemptions {
+					if ex == currentCourse.CourseCode {
+						cfSatisfied = true
+						break
+					}
+				}
+			}
+			if cfSatisfied {
+				continue
+			}
+
 			groupSatisfied := false
 			var groupMissing []string
 			var groupWrongTerm []string
@@ -428,7 +442,7 @@ func (s *graduationService) validateTransitiveCorequisites(courseCode string, co
 					if s.isSameTerm(completed, currentCourse) || s.isCourseTakenBefore(completed, currentCourse) {
 						groupSatisfied = true
 						// If this corequisite is satisfied, also check its transitive corequisites
-						transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, curriculumID, admissionYear)
+						transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, exemptions, curriculumID, admissionYear)
 						allMissing = append(allMissing, transitMissing...)
 						allWrongTerm = append(allWrongTerm, transitWrongTerm...)
 						break // OR condition satisfied, no need to check other options
@@ -448,7 +462,7 @@ func (s *graduationService) validateTransitiveCorequisites(courseCode string, co
 				// Check transitive corequisites for all courses in the OR group
 				for _, link := range group.PrerequisiteCourses {
 					coreqCode := link.PrerequisiteCourse.Code
-					transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, curriculumID, admissionYear)
+					transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, exemptions, curriculumID, admissionYear)
 					allMissing = append(allMissing, transitMissing...)
 					allWrongTerm = append(allWrongTerm, transitWrongTerm...)
 				}
@@ -460,14 +474,14 @@ func (s *graduationService) validateTransitiveCorequisites(courseCode string, co
 				if completed, exists := completedMap[coreqCode]; !exists {
 					allMissing = append(allMissing, coreqCode)
 					// Even if this corequisite is missing, check what its corequisites would be
-					transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, curriculumID, admissionYear)
+					transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, exemptions, curriculumID, admissionYear)
 					allMissing = append(allMissing, transitMissing...)
 					allWrongTerm = append(allWrongTerm, transitWrongTerm...)
 				} else if !s.isSameTerm(completed, currentCourse) && !s.isCourseTakenBefore(completed, currentCourse) {
 					allWrongTerm = append(allWrongTerm, coreqCode)
 				} else {
 					// Same term or taken before (any grade): valid
-					transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, curriculumID, admissionYear)
+					transitMissing, transitWrongTerm := s.validateTransitiveCorequisites(coreqCode, completedMap, currentCourse, visited, exemptions, curriculumID, admissionYear)
 					allMissing = append(allMissing, transitMissing...)
 					allWrongTerm = append(allWrongTerm, transitWrongTerm...)
 				}
