@@ -36,6 +36,7 @@ export default function CurriculumDetailPage() {
   const router = useRouter();
   const [curriculum, setCurriculum] = useState<Curriculum | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -46,6 +47,14 @@ export default function CurriculumDetailPage() {
     }
     load();
   }, [id]);
+
+  // Collect all unique years from courses across all categories
+  const availableYears = curriculum
+    ? [...new Set((curriculum.categories ?? []).flatMap((cat: any) => (cat.courses ?? []).map((c: any) => c.year)).filter(Boolean))].sort() as number[]
+    : [];
+
+  // Set default selected year once data loads
+  const effectiveYear = selectedYear ?? availableYears[0] ?? null;
 
   if (loading) {
     return (
@@ -159,67 +168,92 @@ export default function CurriculumDetailPage() {
 
             {/* Categories & Courses Tab */}
             <TabsContent value="categories" className="mt-4 space-y-4">
+              {/* Year Selector */}
+              {availableYears.length > 1 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-sm text-gray-500 font-medium">Catalog Year:</span>
+                  {availableYears.map((y) => (
+                    <button
+                      key={y}
+                      onClick={() => setSelectedYear(y)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                        effectiveYear === y
+                          ? "bg-chula-active text-white border-chula-active"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-chula-active hover:text-chula-active"
+                      }`}
+                    >
+                      {y}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {(!curriculum.categories || curriculum.categories.length === 0) && (
                 <p className="text-sm text-gray-500">No categories found.</p>
               )}
-              {[...(curriculum.categories ?? [])].sort((a: any, b: any) => b.minCredits - a.minCredits).map((cat: any) => (
-                <Card key={cat.id} className="p-0 overflow-hidden border border-gray-100 shadow-sm">
-                  <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100">
-                    <div>
-                      <p className="font-semibold text-gray-900">{cat.nameTH}</p>
-                      <p className="text-xs text-gray-500">{cat.nameEN}</p>
+              {[...(curriculum.categories ?? [])].sort((a: any, b: any) => b.minCredits - a.minCredits).map((cat: any) => {
+                const filteredCourses = effectiveYear
+                  ? (cat.courses ?? []).filter((c: any) => c.year === effectiveYear)
+                  : (cat.courses ?? []);
+                return (
+                  <Card key={cat.id} className="p-0 overflow-hidden border border-gray-100 shadow-sm">
+                    <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100">
+                      <div>
+                        <p className="font-semibold text-gray-900">{cat.nameTH}</p>
+                        <p className="text-xs text-gray-500">{cat.nameEN}</p>
+                      </div>
+                      <Badge variant="secondary" className="text-xs">
+                        {cat.minCredits} credits required
+                      </Badge>
                     </div>
-                    <Badge variant="secondary" className="text-xs">
-                      {cat.minCredits} credits required
-                    </Badge>
-                  </div>
-                  {cat.courses && cat.courses.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead className="bg-white border-b border-gray-100">
-                          <tr>
-                            <th className="text-left px-4 py-2 font-medium text-gray-600 w-24">Code</th>
-                            <th className="text-left px-4 py-2 font-medium text-gray-600">Name (TH)</th>
-                            <th className="text-left px-4 py-2 font-medium text-gray-600">Name (EN)</th>
-                            <th className="text-left px-4 py-2 font-medium text-gray-600 w-16">Credits</th>
-                            <th className="text-left px-4 py-2 font-medium text-gray-600">Prerequisites</th>
-                            <th className="text-left px-4 py-2 font-medium text-gray-600">Corequisites</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                          {cat.courses.map((course: Course) => (
-                            <tr key={course.code} className="hover:bg-gray-50">
-                              <td className="px-4 py-2 font-mono text-xs text-gray-700">{course.code}</td>
-                              <td className="px-4 py-2 text-gray-900">{course.nameTH}</td>
-                              <td className="px-4 py-2 text-gray-600">{course.nameEN}</td>
-                              <td className="px-4 py-2 text-gray-700">{course.credits}</td>
-                              <td className="px-4 py-2 text-xs text-gray-500 font-mono whitespace-nowrap">
-                                {course.prerequisites || "—"}
-                              </td>
-                              <td className="px-4 py-2 text-xs text-gray-500 font-mono whitespace-nowrap">
-                                {course.corequisites || "—"}
-                              </td>
+                    {filteredCourses.length > 0 ? (
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead className="bg-white border-b border-gray-100">
+                            <tr>
+                              <th className="text-left px-4 py-2 font-medium text-gray-600 w-24">Code</th>
+                              <th className="text-left px-4 py-2 font-medium text-gray-600">Name (TH)</th>
+                              <th className="text-left px-4 py-2 font-medium text-gray-600">Name (EN)</th>
+                              <th className="text-left px-4 py-2 font-medium text-gray-600 w-16">Credits</th>
+                              <th className="text-left px-4 py-2 font-medium text-gray-600">Prerequisites</th>
+                              <th className="text-left px-4 py-2 font-medium text-gray-600">Corequisites</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <p className="px-4 py-3 text-sm text-gray-400">No courses in this category.</p>
-                  )}
-                </Card>
-              ))}
+                          </thead>
+                          <tbody className="divide-y divide-gray-50">
+                            {filteredCourses.map((course: Course) => (
+                              <tr key={course.code} className="hover:bg-gray-50">
+                                <td className="px-4 py-2 font-mono text-xs text-gray-700">{course.code}</td>
+                                <td className="px-4 py-2 text-gray-900">{(course as any).nameTH}</td>
+                                <td className="px-4 py-2 text-gray-600">{course.nameEN}</td>
+                                <td className="px-4 py-2 text-gray-700">{course.credits}</td>
+                                <td className="px-4 py-2 text-xs text-gray-500 font-mono whitespace-nowrap">
+                                  {course.prerequisites || "—"}
+                                </td>
+                                <td className="px-4 py-2 text-xs text-gray-500 font-mono whitespace-nowrap">
+                                  {course.corequisites || "—"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <p className="px-4 py-3 text-sm text-gray-400">No courses for year {effectiveYear}.</p>
+                    )}
+                  </Card>
+                );
+              })}
             </TabsContent>
 
             {/* Dependency Graph Tab */}
             <TabsContent value="graph" className="mt-4">
               <div className="mb-3 flex items-center gap-6 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-0.5 bg-red-500"></div>
+                  <div className="w-6 h-0.5 bg-gray-600"></div>
                   <span>Prerequisites</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-0.5 bg-green-500 border-dashed border-2 border-green-500"></div>
+                  <div className="w-6 border-t-2 border-dashed border-orange-400"></div>
                   <span>Corequisites</span>
                 </div>
               </div>

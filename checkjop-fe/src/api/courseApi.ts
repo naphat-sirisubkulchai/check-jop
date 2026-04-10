@@ -100,16 +100,10 @@ export const courseApi = {
 
       const curriculum = transformCurriculum(currRes.data);
 
-      // Filter courses for this curriculum, deduplicate by code (same course exists per year), convert groups → string
+      // Filter courses for this curriculum (keep all years for per-year browsing)
       const allCourses: any[] = Array.isArray(coursesRes.data) ? coursesRes.data : [];
-      const seenCodes = new Set<string>();
-      const curriculumCourses: Course[] = allCourses
+      const allCurriculumCourses: Course[] = allCourses
         .filter((c: any) => c.curriculum_id === id)
-        .filter((c: any) => {
-          if (seenCodes.has(c.code)) return false;
-          seenCodes.add(c.code);
-          return true;
-        })
         .map((c: any): Course => ({
           code: c.code,
           nameTH: c.name_th,
@@ -122,10 +116,18 @@ export const courseApi = {
           year: c.year,
         }));
 
-      // Attach courses to categories
+      // Deduplicated list for graph (one entry per code)
+      const seenCodes = new Set<string>();
+      const curriculumCourses = allCurriculumCourses.filter((c) => {
+        if (seenCodes.has(c.code)) return false;
+        seenCodes.add(c.code);
+        return true;
+      });
+
+      // Attach all-year courses to categories (for year filtering in UI)
       if (curriculum.categories) {
         curriculum.categories = curriculum.categories.map((cat: any) => {
-          const courses = curriculumCourses
+          const courses = allCurriculumCourses
             .filter((c) => c.categoryId === cat.id)
             .sort((a, b) => a.code.localeCompare(b.code));
           return { ...cat, courses };
