@@ -158,12 +158,13 @@ export default function SettingsDialog({ open, onOpenChange }: SettingsDialogPro
 
   const handleSave = useCallback(() => {
     if (!validate()) return;
-    if (studyPlan.length > 0 && hasSettingsChanged()) {
+    const isFirstTime = !selectedCurriculum || !storedYearMapping;
+    if (!isFirstTime && studyPlan.length > 0 && hasSettingsChanged()) {
       setShowResetConfirm(true);
       return;
     }
-    proceed(false);
-  }, [validate, studyPlan, hasSettingsChanged, proceed]);
+    proceed(isFirstTime);
+  }, [validate, selectedCurriculum, storedYearMapping, studyPlan, hasSettingsChanged, proceed]);
 
   return (
     <>
