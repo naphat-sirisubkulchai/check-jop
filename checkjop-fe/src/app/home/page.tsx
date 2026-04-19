@@ -18,11 +18,7 @@ export default function Page() {
 
       <SettingsDialog
         open={settingsOpen}
-        onOpenChange={(open) => {
-          // ถ้ายังไม่มี curriculum ห้ามปิด dialog
-          if (!open && !selectedCurriculum) return;
-          setSettingsOpen(open);
-        }}
+        onOpenChange={setSettingsOpen}
       />
     </div>
   );

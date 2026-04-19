@@ -147,8 +147,8 @@ export default function SettingsDialog({ open, onOpenChange }: SettingsDialogPro
           4: parseInt(yearMapping[4]),
         });
         if (shouldReset) { setStudyPlan([]); setExemptions([]); }
-        onOpenChange(false);
       }
+      onOpenChange(false);
     } catch {
       setErrors({ general: "Failed to load curriculum data." });
     } finally {
@@ -233,6 +233,7 @@ export default function SettingsDialog({ open, onOpenChange }: SettingsDialogPro
           <DialogFooter>
             <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
             <Button
+              type="button"
               onClick={handleSave}
               disabled={isLoading || isFetchingCurriculums}
               className="bg-gradient-to-r from-chula-active to-pink-500 text-white"
