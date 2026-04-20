@@ -188,8 +188,14 @@ func (s *graduationService) ValidatePrerequisites(progress *model.StudentProgres
 
 	violations := []model.PrerequisiteViolation{}
 	completedCourseMap := s.buildCompletedCourseMap(progress.Courses)
+	earliestPassMap := s.buildEarliestPassMap(progress.Courses)
 
 	for _, completedCourse := range progress.Courses {
+		// Skip F attempts — the retake entry will be validated instead
+		if completedCourse.Grade == "F" {
+			continue
+		}
+
 		// Resolve catalog year per course: use course.Year, fallback to nearest earlier available
 		prereqYear := s.resolvePrereqYearForCourse(progress.CurriculumID, completedCourse.Year)
 
@@ -207,9 +213,10 @@ func (s *graduationService) ValidatePrerequisites(progress *model.StudentProgres
 		visited := make(map[string]bool)
 		missingPrereqs, prereqsWrongTerm := s.validateTransitivePrerequisites(completedCourse.CourseCode, completedCourseMap, completedCourse, visited, progress.Exemptions, progress.CurriculumID, prereqYear)
 
-		// Validate transitive corequisites with proper OR/AND logic
+		// Validate transitive corequisites using earliest passing attempt map,
+		// so a coreq taken same-term in year 1 is still valid even if retaken later.
 		coreqVisited := make(map[string]bool)
-		missingCoreqs, coreqsWrongTerm := s.validateTransitiveCorequisites(completedCourse.CourseCode, completedCourseMap, completedCourse, coreqVisited, progress.Exemptions, progress.CurriculumID, prereqYear)
+		missingCoreqs, coreqsWrongTerm := s.validateTransitiveCorequisites(completedCourse.CourseCode, earliestPassMap, completedCourse, coreqVisited, progress.Exemptions, progress.CurriculumID, prereqYear)
 		wrongTermCourse := len(coreqsWrongTerm) > 0
 
 		if len(missingPrereqs) > 0 || len(prereqsWrongTerm) > 0 || len(missingCoreqs) > 0 || len(coreqsWrongTerm) > 0 || wrongTermCourse {
@@ -498,6 +505,23 @@ func (s *graduationService) buildCompletedCourseMap(courses []model.CompletedCou
 	courseMap := make(map[string]model.CompletedCourse)
 	for _, course := range courses {
 		courseMap[course.CourseCode] = course
+	}
+	return courseMap
+}
+
+// buildEarliestPassMap returns a map of course code -> earliest non-F attempt.
+// Used for corequisite validation: a coreq is valid if it was taken in the same term
+// as the course, even if the student later retook it in a different term.
+func (s *graduationService) buildEarliestPassMap(courses []model.CompletedCourse) map[string]model.CompletedCourse {
+	courseMap := make(map[string]model.CompletedCourse)
+	for _, course := range courses {
+		if course.Grade == "F" {
+			continue
+		}
+		existing, exists := courseMap[course.CourseCode]
+		if !exists || course.Year*10+course.Semester < existing.Year*10+existing.Semester {
+			courseMap[course.CourseCode] = course
+		}
 	}
 	return courseMap
 }
