@@ -120,7 +120,9 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 		// First check if courses specify this category directly
 		for _, course := range progress.Courses {
 			if course.CategoryName == category.NameTH || course.CategoryName == category.NameEN {
-				earnedCredits += course.Credits
+				if course.Grade != "F" {
+					earnedCredits += course.Credits
+				}
 			}
 		}
 
@@ -138,7 +140,7 @@ func (s *graduationService) CheckCategoryRequirements(progress *model.StudentPro
 				if manuallyAssignedCourses[course.Code] {
 					continue
 				}
-				if !countedCourses[course.Code] {
+				if !countedCourses[course.Code] && completedCourse.Grade != "F" {
 					earnedCredits += completedCourse.Credits
 					countedCourses[course.Code] = true
 				}
@@ -503,7 +505,9 @@ func (s *graduationService) buildCompletedCourseMap(courses []model.CompletedCou
 func (s *graduationService) calculateTotalCredits(courses []model.CompletedCourse) int {
 	total := 0
 	for _, course := range courses {
-		total += course.Credits
+		if course.Grade != "F" {
+			total += course.Credits
+		}
 	}
 	return total
 }
