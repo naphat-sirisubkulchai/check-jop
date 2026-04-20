@@ -188,7 +188,7 @@ func (s *graduationService) ValidatePrerequisites(progress *model.StudentProgres
 
 	violations := []model.PrerequisiteViolation{}
 	completedCourseMap := s.buildCompletedCourseMap(progress.Courses)
-	earliestPassMap := s.buildEarliestPassMap(progress.Courses)
+	earliestPassMap := s.buildEarliestAttemptMap(progress.Courses)
 
 	for _, completedCourse := range progress.Courses {
 		// Skip F attempts — the retake entry will be validated instead
@@ -509,15 +509,12 @@ func (s *graduationService) buildCompletedCourseMap(courses []model.CompletedCou
 	return courseMap
 }
 
-// buildEarliestPassMap returns a map of course code -> earliest non-F attempt.
+// buildEarliestAttemptMap returns a map of course code -> earliest attempt (any grade).
 // Used for corequisite validation: a coreq is valid if it was taken in the same term
-// as the course, even if the student later retook it in a different term.
-func (s *graduationService) buildEarliestPassMap(courses []model.CompletedCourse) map[string]model.CompletedCourse {
+// or before the current course, even if it got F, and even if the student retook it later.
+func (s *graduationService) buildEarliestAttemptMap(courses []model.CompletedCourse) map[string]model.CompletedCourse {
 	courseMap := make(map[string]model.CompletedCourse)
 	for _, course := range courses {
-		if course.Grade == "F" {
-			continue
-		}
 		existing, exists := courseMap[course.CourseCode]
 		if !exists || course.Year*10+course.Semester < existing.Year*10+existing.Semester {
 			courseMap[course.CourseCode] = course
