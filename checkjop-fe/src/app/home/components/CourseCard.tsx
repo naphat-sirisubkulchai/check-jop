@@ -286,6 +286,7 @@ export default function CourseCard({
             semester={semester}
             yearOfStudy={yearOfStudy}
             academicYear={academicYear}
+            originalCategoryName={primaryCatName}
             categoryOptions={(() => {
               if (!courseFromList) return undefined;
               // Find primary category TH name by category_id

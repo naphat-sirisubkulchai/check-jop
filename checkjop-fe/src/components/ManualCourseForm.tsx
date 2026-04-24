@@ -24,6 +24,7 @@ interface ManualCourseFormProps {
   yearOfStudy: number;
   academicYear: number;
   categoryOptions?: string[]; // suggested options from course's categoriyOption field
+  originalCategoryName?: string; // the course's default category (from curriculum), used to detect user changes
   editPlan?: {
     course_code: string;
     course_name?: string;
@@ -39,6 +40,7 @@ export default function ManualCourseForm({
   yearOfStudy,
   academicYear,
   categoryOptions,
+  originalCategoryName,
   editPlan,
 }: ManualCourseFormProps) {
   const addCoursePlan = useAppStore((state) => state.addCoursePlan);
@@ -87,13 +89,14 @@ export default function ManualCourseForm({
         const courseCode = formData.course_code.trim().toUpperCase();
 
         if (isEditMode && editPlan) {
+          const categoryChanged = formData.category_name && formData.category_name !== originalCategoryName;
           editCoursePlan(editPlan.course_code, {
             course_code: courseCode,
             course_name: formData.course_name.trim() || undefined,
             credits: formData.credits,
             category_name: formData.category_name || undefined,
             grade: formData.grade || undefined,
-            isManual: true,
+            isManual: !!categoryChanged,
           }, yearOfStudy, semester);
         } else {
           const newPlan: Plan = {
