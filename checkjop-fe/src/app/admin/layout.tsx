@@ -10,32 +10,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is authenticated
-    const authStatus = sessionStorage.getItem("admin_authenticated");
-    setIsAuthenticated(authStatus === "true");
-    setIsChecking(false);
+    fetch("/api/admin/login", { method: "GET" })
+      .then((res) => {
+        setIsAuthenticated(res.ok);
+        setIsChecking(false);
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+        setIsChecking(false);
+      });
   }, []);
 
-  const handleLogin = (username: string, password: string): boolean => {
-    // Get credentials from environment variables
-    const validUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME;
-    const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-
-    if (username === validUsername && password === validPassword) {
-      sessionStorage.setItem("admin_authenticated", "true");
-      setIsAuthenticated(true);
-      return true;
-    }
-    return false;
+  const handleLogin = () => {
+    setIsAuthenticated(true);
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("admin_authenticated");
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
     setIsAuthenticated(false);
     router.push("/admin");
   };
 
-  // Show loading state while checking authentication
   if (isChecking) {
     return (
       <div className="flex items-center justify-center h-full bg-gray-50">
@@ -47,15 +42,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  // Show login page if not authenticated
   if (!isAuthenticated) {
     return <AdminLogin onLogin={handleLogin} />;
   }
 
-  // Show admin content if authenticated
   return (
     <div className="h-full">
-      {/* Logout button - could be integrated into header */}
       <div className="fixed top-4 right-4 z-50">
         <button
           onClick={handleLogout}

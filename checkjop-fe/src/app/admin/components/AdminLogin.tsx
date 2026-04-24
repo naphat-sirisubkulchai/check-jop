@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Lock, User, AlertCircle, Shield } from "lucide-react";
 
 interface AdminLoginProps {
-  onLogin: (username: string, password: string) => boolean;
+  onLogin: () => void;
 }
 
 export default function AdminLogin({ onLogin }: AdminLoginProps) {
@@ -21,14 +21,22 @@ export default function AdminLogin({ onLogin }: AdminLoginProps) {
     setError("");
     setIsLoading(true);
 
-    // Simulate loading delay for better UX
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
 
-    const success = onLogin(username, password);
-
-    if (!success) {
-      setError("Invalid username or password");
-      setPassword("");
+      if (res.ok) {
+        onLogin();
+      } else {
+        const data = await res.json();
+        setError(data.error || "Invalid username or password");
+        setPassword("");
+      }
+    } catch {
+      setError("Network error. Please try again.");
     }
 
     setIsLoading(false);
