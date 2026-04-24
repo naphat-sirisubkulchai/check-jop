@@ -280,11 +280,19 @@ export default function CourseCard({
             semester={semester}
             yearOfStudy={yearOfStudy}
             academicYear={academicYear}
-            categoryOptions={
-              courseFromList?.category_options
+            categoryOptions={(() => {
+              if (!courseFromList) return undefined;
+              // Find primary category name from categories store
+              const primaryCat = categories.find(
+                (c: any) => c.id === (courseFromList.category_id ?? courseFromList.categoryId)
+              );
+              const primaryName = primaryCat?.name_th || primaryCat?.nameTH;
+              const extras = courseFromList.category_options
                 ? courseFromList.category_options.split(",").map((s: string) => s.trim()).filter(Boolean)
-                : undefined
-            }
+                : [];
+              const all = [...(primaryName ? [primaryName] : []), ...extras];
+              return all.length > 0 ? all : undefined;
+            })()}
             editPlan={{
               course_code: courseCode,
               course_name: coursePlan.course_name || courseFromList?.name_en || courseFromList?.course_name,
