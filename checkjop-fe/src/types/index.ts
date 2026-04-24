@@ -4,13 +4,13 @@ type Course = {
   nameEN: string;
   nameTH: string;
   credits: number;
-  categoryId?: string; // Assuming category_id is part of the course data
-  // Additional fields for course dependency graph
+  categoryId?: string;
   prerequisites?: string;
   corequisites?: string;
   categories?: string;
   curriculum?: string;
   year?: number;
+  category_options?: string; // comma-separated list from CSV categoriyOption column
 };
 
 type Plan = {
@@ -22,6 +22,7 @@ type Plan = {
   grade?: string; // "A", "B+", etc. (optional)
   credits: number;
   category_name?: string; // (optional)
+  isManual?: boolean; // true when user manually edited a non-manual course
 };
 
 type Category = {

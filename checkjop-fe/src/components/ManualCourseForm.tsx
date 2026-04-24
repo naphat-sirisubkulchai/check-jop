@@ -23,6 +23,7 @@ interface ManualCourseFormProps {
   semester: number;
   yearOfStudy: number;
   academicYear: number;
+  categoryOptions?: string[]; // suggested options from course's categoriyOption field
   editPlan?: {
     course_code: string;
     course_name?: string;
@@ -37,6 +38,7 @@ export default function ManualCourseForm({
   semester,
   yearOfStudy,
   academicYear,
+  categoryOptions,
   editPlan,
 }: ManualCourseFormProps) {
   const addCoursePlan = useAppStore((state) => state.addCoursePlan);
@@ -91,6 +93,7 @@ export default function ManualCourseForm({
             credits: formData.credits,
             category_name: formData.category_name || undefined,
             grade: formData.grade || undefined,
+            isManual: true,
           }, yearOfStudy, semester);
         } else {
           const newPlan: Plan = {
@@ -148,18 +151,23 @@ export default function ManualCourseForm({
     [],
   );
 
-  // Memoize category options to prevent re-rendering
-  const categoryOptions = useMemo(
-    () =>
-      categories
-        .filter((category) => ALLOWED_CATEGORIES.includes(category.name_th))
-        .map((category) => (
-          <SelectItem key={category.id} value={category.name_th}>
-            {category.name_th}
-          </SelectItem>
-        )),
-    [categories],
-  );
+  // If course has specific categoryOptions from CSV, use those; otherwise fall back to curriculum categories
+  const categorySelectItems = useMemo(() => {
+    if (categoryOptions && categoryOptions.length > 0) {
+      return categoryOptions.map((opt) => (
+        <SelectItem key={opt} value={opt}>
+          {opt}
+        </SelectItem>
+      ));
+    }
+    return categories
+      .filter((category) => ALLOWED_CATEGORIES.includes(category.name_th))
+      .map((category) => (
+        <SelectItem key={category.id} value={category.name_th}>
+          {category.name_th}
+        </SelectItem>
+      ));
+  }, [categories, categoryOptions]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -243,7 +251,7 @@ export default function ManualCourseForm({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none" className="text-gray-500">None</SelectItem>
-              {categoryOptions}
+              {categorySelectItems}
             </SelectContent>
           </Select>
         </div>

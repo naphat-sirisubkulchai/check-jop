@@ -38,18 +38,19 @@ type PrerequisiteCourseLink struct {
 }
 
 type Course struct {
-	ID           uuid.UUID      `json:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
-	CurriculumID uuid.UUID      `json:"curriculum_id" gorm:"type:uuid;not null;uniqueIndex:idx_course_code_year_curriculum_category"`
-	CategoryID   uuid.UUID      `json:"category_id" gorm:"type:uuid;not null;uniqueIndex:idx_course_code_year_curriculum_category"`
-	Code         string         `json:"code" gorm:"not null;uniqueIndex:idx_course_code_year_curriculum_category"`
-	Year         int            `json:"year" gorm:"not null;uniqueIndex:idx_course_code_year_curriculum_category"`
-	NameEN       string         `json:"name_en" gorm:"not null"`
-	NameTH       string         `json:"name_th" gorm:"not null"`
-	Credits      int            `json:"credits" gorm:"not null"`
-	HasCFOption  bool           `json:"has_cf_option" gorm:"default:false"` // Indicates if this course allows C.F. exemption
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    time.Time      `json:"updated_at"`
-	DeletedAt    gorm.DeletedAt `json:"-" gorm:"index"`
+	ID              uuid.UUID      `json:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	CurriculumID    uuid.UUID      `json:"curriculum_id" gorm:"type:uuid;not null;uniqueIndex:idx_course_code_year_curriculum_category"`
+	CategoryID      uuid.UUID      `json:"category_id" gorm:"type:uuid;not null;uniqueIndex:idx_course_code_year_curriculum_category"`
+	Code            string         `json:"code" gorm:"not null;uniqueIndex:idx_course_code_year_curriculum_category"`
+	Year            int            `json:"year" gorm:"not null;uniqueIndex:idx_course_code_year_curriculum_category"`
+	NameEN          string         `json:"name_en" gorm:"not null"`
+	NameTH          string         `json:"name_th" gorm:"not null"`
+	Credits         int            `json:"credits" gorm:"not null"`
+	HasCFOption     bool           `json:"has_cf_option" gorm:"default:false"`
+	CategoryOptions string         `json:"category_options" gorm:"type:text;default:''"` // comma-separated list of selectable category options
+	CreatedAt       time.Time      `json:"created_at"`
+	UpdatedAt       time.Time      `json:"updated_at"`
+	DeletedAt       gorm.DeletedAt `json:"-" gorm:"index"`
 
 	// Relations
 	Curriculum         Curriculum          `json:"-" gorm:"foreignKey:CurriculumID"`

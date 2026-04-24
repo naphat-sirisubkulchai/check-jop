@@ -3,12 +3,10 @@ import { useAppStore } from "@/store/appStore";
 import {
   Trash2,
   GraduationCap,
-  PenLine,
   FolderTree,
   GripVertical,
 } from "lucide-react";
 import { MouseEvent, useState } from "react";
-import GradeDialog from "@/components/GradeDialog";
 import { Badge } from "@/components/ui/badge";
 import { Toggle } from "@/components/ui/toggle";
 import { gradeService } from "@/api/gradApi";
@@ -37,7 +35,6 @@ export default function CourseCard({
   const {
     getCourseByCode,
     removeCoursePlan,
-    editCoursePlan,
     studyPlan,
     exemptions,
     addExemption,
@@ -57,7 +54,6 @@ export default function CourseCard({
       }
     }
   }
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isCFLoading, setIsCFLoading] = useState(false);
 
@@ -91,14 +87,14 @@ export default function CourseCard({
   const categoryName = coursePlan.category_name?.trim() || undefined;
 
   // Check if this is a manually added course
-  const isManualCourse = !courseFromList || !!coursePlan.course_name;
+  const isManualCourse = !courseFromList || !!coursePlan.course_name || !!coursePlan.isManual;
 
   // Check if this course is in exemptions
   const isExempted = exemptions.includes(courseCode);
 
-  function handleOpenGradeDialog(event: MouseEvent<HTMLButtonElement>): void {
+  function handleOpenEditDialog(event: MouseEvent<HTMLButtonElement>): void {
     event.stopPropagation();
-    setIsDialogOpen(true);
+    setIsEditDialogOpen(true);
   }
 
   async function handleToggleExemption(pressed: boolean): Promise<void> {
@@ -162,14 +158,6 @@ export default function CourseCard({
       //   description: `Removed CF for ${courseCode}`,
       // });
     }
-  }
-
-  function handleSaveGrade(grade: string): void {
-    editCoursePlan(courseCode, { grade: grade || undefined }, yearOfStudy, semester);
-  }
-
-  function handleClearGrade(): void {
-    editCoursePlan(courseCode, { grade: undefined }, yearOfStudy, semester);
   }
 
   return (
@@ -240,18 +228,6 @@ export default function CourseCard({
 
         {/* Action Buttons - Visible on Hover (desktop) or always visible (mobile/tablet) */}
         <div className="flex shrink-0 items-center gap-1 opacity-100 xl:opacity-0 xl:transition-opacity xl:group-hover:opacity-100">
-          {/* Edit Manual Course */}
-          {isManualCourse && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={(e) => { e.stopPropagation(); setIsEditDialogOpen(true); }}
-              className="h-7 w-7 text-gray-500 hover:bg-gray-100"
-              title="Edit course"
-            >
-              <PenLine className="h-4 w-4" />
-            </Button>
-          )}
           {/* CF Toggle */}
           <Toggle
             pressed={isExempted}
@@ -272,7 +248,7 @@ export default function CourseCard({
           <Button
             variant="ghost"
             size="icon"
-            onClick={handleOpenGradeDialog}
+            onClick={handleOpenEditDialog}
             className="h-7 w-7 text-chula-active hover:bg-chula-soft hover:text-chula-active"
             title={existingGrade ? "Change grade" : "Add grade"}
           >
@@ -293,40 +269,32 @@ export default function CourseCard({
         </div>
       </div>
 
-      {/* Edit Manual Course Dialog */}
-      {isManualCourse && (
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Edit Course</DialogTitle>
-            </DialogHeader>
-            <ManualCourseForm
-              onClose={() => setIsEditDialogOpen(false)}
-              semester={semester}
-              yearOfStudy={yearOfStudy}
-              academicYear={academicYear}
-              editPlan={{
-                course_code: courseCode,
-                course_name: coursePlan.course_name,
-                credits: courseCredits,
-                category_name: categoryName,
-                grade: existingGrade,
-              }}
-            />
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Grade Dialog */}
-      <GradeDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        courseCode={courseCode}
-        courseName={courseName}
-        currentGrade={existingGrade}
-        onSave={handleSaveGrade}
-        onClear={handleClearGrade}
-      />
+      {/* Edit Course Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edit Course</DialogTitle>
+          </DialogHeader>
+          <ManualCourseForm
+            onClose={() => setIsEditDialogOpen(false)}
+            semester={semester}
+            yearOfStudy={yearOfStudy}
+            academicYear={academicYear}
+            categoryOptions={
+              courseFromList?.category_options
+                ? courseFromList.category_options.split(",").map((s) => s.trim()).filter(Boolean)
+                : undefined
+            }
+            editPlan={{
+              course_code: courseCode,
+              course_name: coursePlan.course_name || courseFromList?.name_en || courseFromList?.course_name,
+              credits: courseCredits,
+              category_name: categoryName,
+              grade: existingGrade,
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

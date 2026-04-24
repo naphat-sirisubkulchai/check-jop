@@ -649,11 +649,13 @@ func (s *courseService) ImportFromCSVWithYear(reader io.Reader, year int) error 
 		return fmt.Errorf("failed to clear existing courses for year %d: %w", year, err)
 	}
 
-	// CSV format for version 4: code,courseNameEN,courseNameTH,credit,prerequisites,corequisites,category,curriculum
-	// (no Year column - we'll add it from the parameter)
+	// CSV format:
+	//   v1 (8 cols): code,courseNameEN,courseNameTH,credit,prerequisites,corequisites,category,curriculum
+	//   v2 (9 cols): code,courseNameEN,courseNameTH,credit,prerequisites,corequisites,category,categoriyOption,curriculum
 	if len(records[0]) < 8 {
 		return fmt.Errorf("CSV must have at least 8 columns")
 	}
+	hasCategroyOption := len(records[0]) >= 9
 
 	// Build curriculum cache
 	curriculumCache := make(map[string]*model.Curriculum)
@@ -669,8 +671,16 @@ func (s *courseService) ImportFromCSVWithYear(reader io.Reader, year int) error 
 			return fmt.Errorf("row %d: insufficient columns", i+2)
 		}
 
+		// Determine column indices based on format
+		curriculumColIdx := 7
+		categoryOptionStr := ""
+		if hasCategroyOption && len(record) >= 9 {
+			curriculumColIdx = 8
+			categoryOptionStr = strings.TrimSpace(record[7])
+		}
+
 		// Parse multiple curricula (comma-separated)
-		curriculumNames := strings.Split(strings.TrimSpace(record[7]), ",")
+		curriculumNames := strings.Split(strings.TrimSpace(record[curriculumColIdx]), ",")
 		// Parse multiple categories (comma-separated)
 		categoryNames := strings.Split(strings.TrimSpace(record[6]), ",")
 
@@ -726,13 +736,14 @@ func (s *courseService) ImportFromCSVWithYear(reader io.Reader, year int) error 
 				}
 
 				course := model.Course{
-					Code:         strings.TrimSpace(record[0]),
-					NameEN:       strings.TrimSpace(record[1]),
-					NameTH:       strings.TrimSpace(record[2]),
-					Credits:      credits,
-					CurriculumID: curriculum.ID,
-					CategoryID:   categoryID,
-					Year:         year, // Use the year parameter instead of reading from CSV
+					Code:            strings.TrimSpace(record[0]),
+					NameEN:          strings.TrimSpace(record[1]),
+					NameTH:          strings.TrimSpace(record[2]),
+					Credits:         credits,
+					CurriculumID:    curriculum.ID,
+					CategoryID:      categoryID,
+					Year:            year,
+					CategoryOptions: categoryOptionStr,
 				}
 
 				// Create unique key for deduplication (include category and year to allow same course in different categories/years)
@@ -761,6 +772,9 @@ func (s *courseService) setupCourseRelationshipsWithYear(records [][]string, yea
 	// Build curriculum cache
 	curriculumCache := make(map[string]*model.Curriculum)
 
+	// Detect format: 9+ cols means new format with categoriyOption at index 7, curriculum at index 8
+	hasCategroyOption := len(records) > 0 && len(records[0]) >= 9
+
 	// Collect all errors instead of failing on first error
 	var allErrors []string
 
@@ -769,10 +783,15 @@ func (s *courseService) setupCourseRelationshipsWithYear(records [][]string, yea
 			continue // Skip invalid records
 		}
 
+		curriculumColIdx := 7
+		if hasCategroyOption && len(record) >= 9 {
+			curriculumColIdx = 8
+		}
+
 		courseCode := strings.TrimSpace(record[0])
 		prerequisitesStr := strings.TrimSpace(record[4])
 		corequisitesStr := strings.TrimSpace(record[5])
-		curriculumNames := strings.Split(strings.TrimSpace(record[7]), ",")
+		curriculumNames := strings.Split(strings.TrimSpace(record[curriculumColIdx]), ",")
 
 		// Skip if no relationships to set up
 		if prerequisitesStr == "" && corequisitesStr == "" {
