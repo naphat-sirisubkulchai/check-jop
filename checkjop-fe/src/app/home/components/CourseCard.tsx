@@ -93,7 +93,8 @@ export default function CourseCard({
   const categoryName = coursePlan.category_name?.trim() || primaryCatName || undefined;
 
   // Check if this is a manually added course
-  const isManualCourse = !courseFromList || !!coursePlan.course_name || !!coursePlan.isManual;
+  // course_name alone doesn't imply manual — only flag when courseFromList doesn't exist or isManual explicitly set
+  const isManualCourse = !courseFromList || !!coursePlan.isManual;
 
   // Check if this course is in exemptions
   const isExempted = exemptions.includes(courseCode);
