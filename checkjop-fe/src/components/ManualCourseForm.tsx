@@ -89,14 +89,14 @@ export default function ManualCourseForm({
         const courseCode = formData.course_code.trim().toUpperCase();
 
         if (isEditMode && editPlan) {
-          const categoryChanged = formData.category_name && formData.category_name !== originalCategoryName;
+          const categoryChanged = !!formData.category_name && formData.category_name !== originalCategoryName;
           editCoursePlan(editPlan.course_code, {
             course_code: courseCode,
             course_name: formData.course_name.trim() || undefined,
             credits: formData.credits,
             category_name: formData.category_name || undefined,
             grade: formData.grade || undefined,
-            isManual: !!categoryChanged,
+            isManual: categoryChanged,
           }, yearOfStudy, semester);
         } else {
           const newPlan: Plan = {
