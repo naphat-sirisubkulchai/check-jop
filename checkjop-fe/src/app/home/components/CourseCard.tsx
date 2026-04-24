@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useAppStore } from "@/store/appStore";
 import {
   Trash2,
-  GraduationCap,
+  PenLine,
   FolderTree,
   GripVertical,
 } from "lucide-react";
@@ -84,7 +84,13 @@ export default function CourseCard({
     "Unknown Course";
   const courseCredits = coursePlan.credits || courseFromList?.credits || 0;
   const existingGrade = coursePlan.grade;
-  const categoryName = coursePlan.category_name?.trim() || undefined;
+  const primaryCatName = (() => {
+    const cat = categories.find(
+      (c: any) => c.id === (courseFromList?.category_id ?? courseFromList?.categoryId)
+    );
+    return cat?.name_th || cat?.nameTH;
+  })();
+  const categoryName = coursePlan.category_name?.trim() || primaryCatName || undefined;
 
   // Check if this is a manually added course
   const isManualCourse = !courseFromList || !!coursePlan.course_name || !!coursePlan.isManual;
@@ -252,7 +258,7 @@ export default function CourseCard({
             className="h-7 w-7 text-chula-active hover:bg-chula-soft hover:text-chula-active"
             title={existingGrade ? "Change grade" : "Add grade"}
           >
-            <GraduationCap className="h-4 w-4" />
+            <PenLine className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
@@ -282,15 +288,26 @@ export default function CourseCard({
             academicYear={academicYear}
             categoryOptions={(() => {
               if (!courseFromList) return undefined;
-              // Find primary category name from categories store
+              // Find primary category TH name by category_id
               const primaryCat = categories.find(
                 (c: any) => c.id === (courseFromList.category_id ?? courseFromList.categoryId)
               );
               const primaryName = primaryCat?.name_th || primaryCat?.nameTH;
+              // Map categoryOptions (EN) → TH using categories store; fallback to original if not found
               const extras = courseFromList.category_options
-                ? courseFromList.category_options.split(",").map((s: string) => s.trim()).filter(Boolean)
+                ? courseFromList.category_options.split(",").map((s: string) => {
+                    const en = s.trim();
+                    const match = categories.find((c: any) => (c.name_en || c.nameEN) === en);
+                    return (match?.name_th || match?.nameTH) ?? en;
+                  }).filter(Boolean)
                 : [];
-              const all = [...(primaryName ? [primaryName] : []), ...extras];
+              // Deduplicate: primaryName might already be in extras
+              const seen = new Set<string>();
+              const all = [...(primaryName ? [primaryName] : []), ...extras].filter((v) => {
+                if (seen.has(v)) return false;
+                seen.add(v);
+                return true;
+              });
               return all.length > 0 ? all : undefined;
             })()}
             editPlan={{
