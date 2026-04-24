@@ -282,7 +282,7 @@ export default function CourseCard({
             academicYear={academicYear}
             categoryOptions={
               courseFromList?.category_options
-                ? courseFromList.category_options.split(",").map((s) => s.trim()).filter(Boolean)
+                ? courseFromList.category_options.split(",").map((s: string) => s.trim()).filter(Boolean)
                 : undefined
             }
             editPlan={{
