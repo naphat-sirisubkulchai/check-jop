@@ -247,6 +247,25 @@ export default function CurriculumDetailPage() {
 
             {/* Dependency Graph Tab */}
             <TabsContent value="graph" className="mt-4">
+              {/* Year Selector */}
+              {availableYears.length > 1 && (
+                <div className="flex items-center gap-2 flex-wrap mb-3">
+                  <span className="text-sm text-gray-500 font-medium">Catalog Year:</span>
+                  {availableYears.map((y) => (
+                    <button
+                      key={y}
+                      onClick={() => setSelectedYear(y)}
+                      className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${
+                        effectiveYear === y
+                          ? "bg-chula-active text-white border-chula-active"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-chula-active hover:text-chula-active"
+                      }`}
+                    >
+                      {y}
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className="mb-3 flex items-center gap-6 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-0.5 bg-gray-600"></div>
@@ -258,13 +277,18 @@ export default function CurriculumDetailPage() {
                 </div>
               </div>
               <Card className="overflow-hidden border border-gray-100 shadow-sm" style={{ height: "65vh" }}>
-                {coursesForGraph.length > 0 ? (
-                  <CourseGraph courses={coursesForGraph} />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    No courses with dependency data.
-                  </div>
-                )}
+                {(() => {
+                  const filtered = effectiveYear
+                    ? coursesForGraph.filter((c: any) => c.year === effectiveYear)
+                    : coursesForGraph;
+                  return filtered.length > 0 ? (
+                    <CourseGraph key={effectiveYear} courses={filtered} />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-400">
+                      No courses with dependency data.
+                    </div>
+                  );
+                })()}
               </Card>
             </TabsContent>
           </Tabs>
