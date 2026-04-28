@@ -16,25 +16,20 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
   const missingCredits = category.required_credits - category.earned_credits;
   const hasMissingCourses = !category.is_satisfied && category.missing_courses?.length > 0;
   const hasViolatedCourses = category.violated_courses?.length > 0;
+  const completedWithWarning = category.is_satisfied && hasViolatedCourses;
 
   const getProgressColor = () => {
-    if (category.is_satisfied) {
-      return "bg-gradient-to-r from-green-500 to-emerald-600";
-    } else if (category.earned_credits === 0) {
-      return "bg-gradient-to-r from-red-500 to-red-600";
-    } else {
-      return "bg-gradient-to-r from-yellow-500 to-orange-500";
-    }
+    if (completedWithWarning) return "bg-gradient-to-r from-yellow-400 to-orange-400";
+    if (category.is_satisfied) return "bg-gradient-to-r from-green-500 to-emerald-600";
+    if (category.earned_credits === 0) return "bg-gradient-to-r from-red-500 to-red-600";
+    return "bg-gradient-to-r from-yellow-500 to-orange-500";
   };
 
   const getBadgeStyle = () => {
-    if (category.is_satisfied) {
-      return "bg-gradient-to-r from-green-500 to-emerald-600 text-white";
-    } else if (category.earned_credits === 0) {
-      return "bg-gradient-to-r from-red-500 to-red-600 text-white";
-    } else {
-      return "bg-gradient-to-r from-yellow-500 to-orange-400 text-white";
-    }
+    if (completedWithWarning) return "bg-gradient-to-r from-yellow-400 to-orange-400 text-white";
+    if (category.is_satisfied) return "bg-gradient-to-r from-green-500 to-emerald-600 text-white";
+    if (category.earned_credits === 0) return "bg-gradient-to-r from-red-500 to-red-600 text-white";
+    return "bg-gradient-to-r from-yellow-500 to-orange-400 text-white";
   };
 
   return (
@@ -75,7 +70,11 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
           </div>
         </div>
         <div className="ml-3 flex-shrink-0">
-          {category.is_satisfied ? (
+          {completedWithWarning ? (
+            <Badge className={cn("font-bold text-xs px-2 py-1 rounded-lg shadow-sm whitespace-nowrap", getBadgeStyle())} role="status">
+              ⚠ Completed
+            </Badge>
+          ) : category.is_satisfied ? (
             <Badge className={cn("font-bold text-xs px-2 py-1 rounded-lg shadow-sm whitespace-nowrap", getBadgeStyle())} role="status">
               ✓ Completed
             </Badge>
@@ -94,7 +93,7 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
         <div className="px-5 pb-4 space-y-3">
           {hasViolatedCourses && (
             <div>
-              <p className="text-xs font-semibold text-orange-600 mb-2">วิชาที่ผิดเงื่อนไข (prereq/coreq):</p>
+              <p className="text-xs font-semibold text-orange-600 mb-2">Condition violations (prereq/coreq):</p>
               <div className="flex flex-wrap gap-2">
                 {category.violated_courses.map((code) => (
                   <span key={code} className="text-xs bg-orange-50 text-orange-700 border border-orange-300 rounded px-2 py-1 font-mono">
@@ -106,7 +105,7 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
           )}
           {hasMissingCourses && (
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">วิชาที่ยังไม่ได้ลง:</p>
+              <p className="text-xs font-semibold text-gray-500 mb-2">Missing courses:</p>
               <div className="flex flex-wrap gap-2">
                 {category.missing_courses
                   .filter((code) => !category.violated_courses?.includes(code))
