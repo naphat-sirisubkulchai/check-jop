@@ -51,6 +51,13 @@ func (s *graduationService) CheckGraduation(progress *model.StudentProgress) (*m
 		return nil, err
 	}
 
+	// Populate ViolatedCourses: courses that are enrolled but have prerequisite violations
+	violatedSet := make(map[string]bool)
+	for _, v := range prereqViolations {
+		violatedSet[v.CourseCode] = true
+	}
+	s.populateViolatedCourses(categoryResults, violatedSet, progress)
+
 	creditLimitViolations, err := s.ValidateCreditLimits(progress)
 	if err != nil {
 		return nil, err
@@ -728,4 +735,58 @@ func (s *graduationService) validateExemptions(exemptions []string, curriculumID
 	}
 
 	return nil
+}
+
+// populateViolatedCourses assigns ViolatedCourses to each CategoryCheckResult
+// by looking up which completed courses in each category have prerequisite violations.
+func (s *graduationService) populateViolatedCourses(results []model.CategoryCheckResult, violatedSet map[string]bool, progress *model.StudentProgress) {
+	if len(violatedSet) == 0 {
+		return
+	}
+
+	categories, err := s.categoryRepo.GetByCurriculumID(progress.CurriculumID)
+	if err != nil {
+		return
+	}
+
+	// Build map: categoryName → set of course codes in that category for admission year
+	catCourseMap := make(map[string]map[string]bool)
+	for _, cat := range categories {
+		codes := make(map[string]bool)
+		for _, c := range cat.Courses {
+			if c.Year == progress.AdmissionYear {
+				codes[c.Code] = true
+			}
+		}
+		catCourseMap[cat.NameTH] = codes
+		catCourseMap[cat.NameEN] = codes
+	}
+
+	for i, result := range results {
+		coursesInCat := catCourseMap[result.CategoryName]
+
+		// Find violated courses in this category
+		var violated []string
+		for code := range violatedSet {
+			if coursesInCat[code] {
+				violated = append(violated, code)
+			}
+		}
+		results[i].ViolatedCourses = violated
+
+		// Remove violated courses from MissingCourses to avoid duplication
+		if len(violated) > 0 {
+			violatedInCat := make(map[string]bool, len(violated))
+			for _, code := range violated {
+				violatedInCat[code] = true
+			}
+			filtered := results[i].MissingCourses[:0]
+			for _, code := range results[i].MissingCourses {
+				if !violatedInCat[code] {
+					filtered = append(filtered, code)
+				}
+			}
+			results[i].MissingCourses = filtered
+		}
+	}
 }

@@ -116,14 +116,6 @@ export const courseApi = {
           year: c.year,
         }));
 
-      // Deduplicated list for graph (one entry per code)
-      const seenCodes = new Set<string>();
-      const curriculumCourses = allCurriculumCourses.filter((c) => {
-        if (seenCodes.has(c.code)) return false;
-        seenCodes.add(c.code);
-        return true;
-      });
-
       // Attach all-year courses to categories (for year filtering in UI)
       if (curriculum.categories) {
         curriculum.categories = curriculum.categories.map((cat: any) => {
@@ -134,7 +126,8 @@ export const courseApi = {
         });
       }
 
-      curriculum.courses = curriculumCourses;
+      // Keep all courses (all years) for graph — page filters by year
+      curriculum.courses = allCurriculumCourses;
       return curriculum;
     } catch {
       return null;

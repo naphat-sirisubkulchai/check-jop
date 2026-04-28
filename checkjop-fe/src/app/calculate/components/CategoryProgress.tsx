@@ -15,6 +15,7 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
   const progressPercentage = (category.earned_credits / category.required_credits) * 100;
   const missingCredits = category.required_credits - category.earned_credits;
   const hasMissingCourses = !category.is_satisfied && category.missing_courses?.length > 0;
+  const hasViolatedCourses = category.violated_courses?.length > 0;
 
   const getProgressColor = () => {
     if (category.is_satisfied) {
@@ -39,8 +40,8 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
   return (
     <div className="hover:bg-gray-50 transition-colors">
       <div
-        className={cn("flex items-center justify-between p-4", hasMissingCourses && "cursor-pointer")}
-        onClick={() => hasMissingCourses && setExpanded(!expanded)}
+        className={cn("flex items-center justify-between p-4", (hasMissingCourses || hasViolatedCourses) && "cursor-pointer")}
+        onClick={() => (hasMissingCourses || hasViolatedCourses) && setExpanded(!expanded)}
         role="region"
         aria-label={`${category.category_name}: ${category.earned_credits} of ${category.required_credits} credits completed`}
       >
@@ -49,7 +50,7 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
             <h4 className="text-sm font-bold text-gray-900 truncate">
               {category.category_name}
             </h4>
-            {hasMissingCourses && (
+            {(hasMissingCourses || hasViolatedCourses) && (
               expanded ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" /> : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
             )}
           </div>
@@ -89,16 +90,34 @@ export function CategoryProgress({ category }: CategoryProgressProps) {
           )}
         </div>
       </div>
-      {hasMissingCourses && expanded && (
-        <div className="px-5 pb-4">
-          <p className="text-xs font-semibold text-gray-500 mb-2">วิชาที่ยังไม่ได้ลง:</p>
-          <div className="flex flex-wrap gap-2">
-            {category.missing_courses.map((code) => (
-              <span key={code} className="text-xs bg-red-50 text-red-700 border border-red-200 rounded px-2 py-1 font-mono">
-                {code}
-              </span>
-            ))}
-          </div>
+      {(hasMissingCourses || hasViolatedCourses) && expanded && (
+        <div className="px-5 pb-4 space-y-3">
+          {hasViolatedCourses && (
+            <div>
+              <p className="text-xs font-semibold text-orange-600 mb-2">วิชาที่ผิดเงื่อนไข (prereq/coreq):</p>
+              <div className="flex flex-wrap gap-2">
+                {category.violated_courses.map((code) => (
+                  <span key={code} className="text-xs bg-orange-50 text-orange-700 border border-orange-300 rounded px-2 py-1 font-mono">
+                    {code}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {hasMissingCourses && (
+            <div>
+              <p className="text-xs font-semibold text-gray-500 mb-2">วิชาที่ยังไม่ได้ลง:</p>
+              <div className="flex flex-wrap gap-2">
+                {category.missing_courses
+                  .filter((code) => !category.violated_courses?.includes(code))
+                  .map((code) => (
+                    <span key={code} className="text-xs bg-red-50 text-red-700 border border-red-200 rounded px-2 py-1 font-mono">
+                      {code}
+                    </span>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

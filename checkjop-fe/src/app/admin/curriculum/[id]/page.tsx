@@ -278,9 +278,16 @@ export default function CurriculumDetailPage() {
               </div>
               <Card className="overflow-hidden border border-gray-100 shadow-sm" style={{ height: "65vh" }}>
                 {(() => {
-                  const filtered = effectiveYear
+                  const yearFiltered = effectiveYear
                     ? coursesForGraph.filter((c: any) => c.year === effectiveYear)
                     : coursesForGraph;
+                  // Dedup by code within the selected year (course can appear in multiple categories)
+                  const seenCodes = new Set<string>();
+                  const filtered = yearFiltered.filter((c: any) => {
+                    if (seenCodes.has(c.code)) return false;
+                    seenCodes.add(c.code);
+                    return true;
+                  });
                   return filtered.length > 0 ? (
                     <CourseGraph key={effectiveYear} courses={filtered} />
                   ) : (

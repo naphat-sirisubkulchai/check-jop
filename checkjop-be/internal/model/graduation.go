@@ -51,6 +51,7 @@ type CategoryCheckResult struct {
 	RequiredCredits int      `json:"required_credits"`
 	IsSatisfied     bool     `json:"is_satisfied"`
 	MissingCourses  []string `json:"missing_courses"`
+	ViolatedCourses []string `json:"violated_courses"` // courses enrolled but failing prerequisite/corequisite conditions
 }
 
 type PrerequisiteViolation struct {
